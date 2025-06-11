@@ -1,0 +1,5 @@
+node_modules
+dist
+apps/**/.next
+apps/**/out
+apps/**/.env*

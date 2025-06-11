@@ -1,0 +1,44 @@
+version: "3.8"
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: apps/frontend/Dockerfile
+    volumes:
+      - ./apps/frontend:/app/apps/frontend
+      - /app/node_modules
+    ports:
+      - "3001:3000"
+    # depends_on:
+    #   - backend
+
+  # backend:
+  #   build:
+  #     context: .
+  #     dockerfile: apps/backend/Dockerfile
+  #   volumes:
+  #     - ./apps/backend/src:/app/apps/backend/src
+  #     - ./apps/backend/nodemon.json:/app/apps/backend/nodemon.json
+  #   env_file:
+  #     - .env
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     - db
+  #     - redis
+
+  # db:
+  #   image: postgres:15-alpine
+  #   environment:
+  #     POSTGRES_DB: ${POSTGRES_DB}
+  #     POSTGRES_USER: ${POSTGRES_USER}
+  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  #   volumes:
+  #     - postgresdata:/var/lib/postgresql/data
+
+  # redis:
+  #   image: redis:7-alpine
+
+# volumes:
+#   postgresdata:
