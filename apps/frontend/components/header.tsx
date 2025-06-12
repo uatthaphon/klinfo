@@ -5,7 +5,6 @@ import { SidebarTrigger } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
 import { HTMLAttributes, Ref, useEffect, useState } from 'react';
 import { ProfileDropdown } from './profile-dropdown';
-import { ModeToggle } from './ui/mode-toggle';
 
 const headerBaseClass = "bg-background flex h-16 items-center gap-3 p-4 sm:gap-4";
 const headerFixedClass = "header-fixed peer/header fixed z-50 w-[-webkit-fill-available]";
@@ -63,7 +62,6 @@ export const Header = ({
       />
       {children}
       <div className={rightControlsClass}>
-        <ModeToggle />
         <ProfileDropdown user={user} />
       </div>
     </header>

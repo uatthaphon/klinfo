@@ -63,7 +63,7 @@ const data = {
   user: {
     name: "shadcn",
     email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+    avatar: "https://ui.shadcn.com/avatars/02.png",
   },
   clinics: [
     {
@@ -102,9 +102,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain role={role} items={data.navMain} />
+        <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
