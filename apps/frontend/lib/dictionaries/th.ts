@@ -82,6 +82,7 @@ export default {
     invalidEmail: 'อีเมลไม่ถูกต้อง',
     passwordTooShort: 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร',
     passwordsDoNotMatch: 'รหัสผ่านไม่ตรงกัน',
+    loading: 'กำลังสมัคร...',
     errorCodes: {
       EMAIL_ALREADY_EXISTS: 'อีเมลนี้ถูกใช้ไปแล้ว',
       INVALID_CREDENTIALS: 'อีเมลหรือรหัสผ่านไม่ถูกต้อง',

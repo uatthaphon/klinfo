@@ -82,6 +82,7 @@ export default {
     invalidEmail: 'Invalid email address.',
     passwordTooShort: 'Password must be at least 6 characters.',
     passwordsDoNotMatch: 'Passwords do not match.',
+    loading: 'Signing up...',
     errorCodes: {
       EMAIL_ALREADY_EXISTS: 'This email is already registered.',
       INVALID_CREDENTIALS: 'Incorrect email or password.',

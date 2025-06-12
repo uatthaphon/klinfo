@@ -1,6 +1,7 @@
 'use client';
 
 import { signup } from '@/lib/api/auth';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -113,9 +114,10 @@ export function SignUpForm({ className, ...props }: React.ComponentProps<'div'>)
                   onChange={(e) => setName(e.target.value)}
                   aria-invalid={!!validationErrors.name}
                   aria-describedby={validationErrors.name ? 'name-error' : undefined}
+                  disabled={loading}
                 />
                 {validationErrors.name && (
-                  <p id="name-error" className="text-destructive text-sm">
+                  <p id="name-error" className="text-destructive text-sm -mt-1">
                     {validationErrors.name}
                   </p>
                 )}
@@ -131,9 +133,10 @@ export function SignUpForm({ className, ...props }: React.ComponentProps<'div'>)
                   onChange={(e) => setEmail(e.target.value)}
                   aria-invalid={!!validationErrors.email}
                   aria-describedby={validationErrors.email ? 'email-error' : undefined}
+                  disabled={loading}
                 />
                 {validationErrors.email && (
-                  <p id="email-error" className="text-destructive text-sm">
+                  <p id="email-error" className="text-destructive text-sm -mt-1">
                     {validationErrors.email}
                   </p>
                 )}
@@ -149,9 +152,10 @@ export function SignUpForm({ className, ...props }: React.ComponentProps<'div'>)
                   onChange={(e) => setPassword(e.target.value)}
                   isInvalid={!!validationErrors.password}
                   aria-describedby={validationErrors.password ? 'password-error' : undefined}
+                  disabled={loading}
                 />
                 {validationErrors.password && (
-                  <p id="password-error" className="text-destructive text-sm">
+                  <p id="password-error" className="text-destructive text-sm -mt-1">
                     {validationErrors.password}
                   </p>
                 )}
@@ -167,22 +171,23 @@ export function SignUpForm({ className, ...props }: React.ComponentProps<'div'>)
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   isInvalid={!!validationErrors.confirmPassword}
                   aria-describedby={validationErrors.confirmPassword ? 'confirmPassword-error' : undefined}
+                  disabled={loading}
                 />
                 {validationErrors.confirmPassword && (
-                  <p id="confirmPassword-error" className="text-destructive text-sm">
+                  <p id="confirmPassword-error" className="text-destructive text-sm -mt-1">
                     {validationErrors.confirmPassword}
                   </p>
                 )}
               </div>
               <Button type="submit" className={submitButtonClass} disabled={loading}>
-                {t('auth.signup')}
+                {loading ? t('auth.loading') : t('auth.signup')}
               </Button>
               {error && <p className="text-destructive text-sm text-center">{error}</p>}
               <div className={loginLinkWrapperClass}>
                 {t('auth.haveAccount')}{' '}
-                <a href="#" className={loginLinkClass}>
+                <Link href="/auth/login" className={loginLinkClass}>
                   {t('auth.login')}
-                </a>
+                </Link>
               </div>
             </div>
           </form>
@@ -192,7 +197,8 @@ export function SignUpForm({ className, ...props }: React.ComponentProps<'div'>)
         </CardContent>
       </Card>
       <div className={legalNoticeClass}>
-        {t('auth.agree')} <a href="#">{t('auth.terms')}</a> {t('auth.and')} <a href="#">{t('auth.privacy')}</a>.
+        {t('auth.agree')} <Link href="/terms">{t('auth.terms')}</Link> {t('auth.and')}{' '}
+        <Link href="/privacy">{t('auth.privacy')}</Link>.
       </div>
     </div>
   );
