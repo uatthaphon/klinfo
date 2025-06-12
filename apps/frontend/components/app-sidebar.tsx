@@ -8,17 +8,18 @@ import {
   GalleryVerticalEnd,
   History,
   IdCard,
+  Info,
   LayoutDashboard,
   List,
   Orbit,
   Receipt,
+  SettingsIcon,
   Users
 } from "lucide-react"
 import * as React from "react"
 
 import { ClinicSwitcher } from "@/components/clinic-switcher"
 import { NavMain } from "@/components/nav-main"
-import { NavUser } from "@/components/nav-user"
 import {
   Sidebar,
   SidebarContent,
@@ -26,6 +27,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar"
+import { NavSecondary } from "./nav-secondary"
 
 function getNavItemsByRole(role: "owner" | "staff" | "doctor") {
   const roleSpecific = {
@@ -78,6 +80,18 @@ const data = {
     },
   ],
   navMain: getNavItemsByRole(role),
+  navSecondary: [
+    {
+      title: "Settings",
+      url: "#",
+      icon: SettingsIcon,
+    },
+    {
+      title: "Get Help",
+      url: "#",
+      icon: Info,
+    }
+  ],
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -90,7 +104,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain role={role} items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

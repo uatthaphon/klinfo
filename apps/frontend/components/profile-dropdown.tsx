@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { useTranslation } from "@/lib/i18n";
-import { BadgeCheck, Bell, CreditCard, LogOut } from 'lucide-react';
+import { BadgeCheck, Bell, CreditCard, LogOut, Sparkles } from 'lucide-react';
 
 const triggerButtonClass = "relative h-8 w-8 rounded-full";
 const avatarClass = "h-8 w-8";
@@ -49,6 +49,13 @@ export function ProfileDropdown({
             <span className={userEmailClass}>{user.email}</span>
           </div>
         </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuItem>
+            <Sparkles />
+            {t("user.upgradePro")}
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem>
