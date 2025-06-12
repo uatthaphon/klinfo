@@ -3,3 +3,4 @@ dist
 apps/**/.next
 apps/**/out
 apps/**/.env*
+Notes

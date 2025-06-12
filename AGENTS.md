@@ -113,6 +113,7 @@ Pages with similar structure should share grouped components:
 3. Check and input patient vitals
 4. Finalize doctor's orders for billing
 5. Process payments
+6. View and manage follow-up list
 
 ### Doctor:
 1. View assigned patients from queue
@@ -122,6 +123,7 @@ Pages with similar structure should share grouped components:
 5. Add follow-up if needed
 6. Mark consultation as completed
 7. Optionally generate MC (Medical Certificate)
+8. View and update follow-up status
 
 ### Admin:
 1. Monitor all clinics and usage stats
@@ -140,6 +142,7 @@ Pages with similar structure should share grouped components:
 | Manage Queue (Reorder/Cancel) | ✅ | ✅ | ❌ | 🔍 |
 | Patient Registration     |   ✅   |   ✅   |   ❌    |   🔍   |
 | View Patient List        |   ✅   |   ✅   |   ✅    |   🔍   |
+| Follow-up Management      |   ✅   |   ✅   |   ✅    |   🔍   |
 | Input Vitals             |   ✅   |   ✅   |   ❌    |   ❌   |
 | Start Consultation       |   ❌   |   ❌   |   ✅    |   ❌   |
 | Write Notes & Prescriptions | ❌ | ❌ | ✅ | ❌ |
