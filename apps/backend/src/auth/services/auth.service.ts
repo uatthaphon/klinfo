@@ -1,6 +1,11 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ResponseMeta } from 'src/common/constants/response-codes';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 import { LoginDto } from '../dto/login.dto';
@@ -16,7 +21,18 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async signup(dto: SignupDto): Promise<{ accessToken: string }> {
+  async signup(dto: SignupDto): Promise<any> {
+    const existing = await this.userRepository.findOne({
+      where: { email: dto.email },
+    });
+    if (existing) {
+      throw new BadRequestException({
+        success: false,
+        ...ResponseMeta.Auth.EmailAlreadyRegistered,
+        data: null,
+      });
+    }
+
     const hashedPassword = await hashPassword(dto.password);
     const user = this.userRepository.create({
       name: dto.name,
@@ -25,29 +41,51 @@ export class AuthService {
     });
     await this.userRepository.save(user);
     const accessToken = await this.jwtService.signAsync({ sub: user.id });
-    return { accessToken };
+    return {
+      success: true,
+      ...ResponseMeta.Auth.SignupSuccess,
+      data: { accessToken },
+    };
   }
 
-  async login(dto: LoginDto): Promise<{ accessToken: string }> {
+  async login(dto: LoginDto): Promise<any> {
     const user = await this.userRepository.findOne({
       where: { email: dto.email },
     });
     if (!user || !(await comparePasswords(dto.password, user.password))) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException({
+        success: false,
+        ...ResponseMeta.Auth.InvalidCredentials,
+        data: null,
+      });
     }
     const accessToken = await this.jwtService.signAsync({ sub: user.id });
-    return { accessToken };
+    return {
+      success: true,
+      ...ResponseMeta.Auth.LoginSuccess,
+      data: { accessToken },
+    };
   }
 
-  async resetPassword(dto: ResetPasswordDto): Promise<{ success: boolean }> {
+  async resetPassword(dto: ResetPasswordDto): Promise<any> {
     const user = await this.userRepository.findOne({
       where: { email: dto.email },
     });
-    if (!user) throw new UnauthorizedException('Invalid email or token');
+    if (!user) {
+      throw new UnauthorizedException({
+        success: false,
+        ...ResponseMeta.Auth.InvalidResetToken,
+        data: null,
+      });
+    }
 
     // Here you'd validate the token, omitted for now
     user.password = await hashPassword(dto.newPassword);
     await this.userRepository.save(user);
-    return { success: true };
+    return {
+      success: true,
+      ...ResponseMeta.Auth.PasswordResetSuccess,
+      data: null,
+    };
   }
 }

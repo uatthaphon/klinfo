@@ -5,7 +5,7 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 COPY ../../pnpm-workspace.yaml ./
 COPY ../../package.json ../../pnpm-lock.yaml* ./
 COPY ../../apps/frontend/package.json ./apps/frontend/
-RUN pnpm install --frozen-lockfile
+RUN pnpm install
 
 # Rebuild app
 FROM node:lts-alpine AS runner

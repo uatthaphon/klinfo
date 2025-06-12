@@ -5,9 +5,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuditModule } from './audit/audit.module';
-import { UsersModule } from './users/users.module';
-import { ClinicsModule } from './clinics/clinics.module';
 import { AuthModule } from './auth/auth.module';
+import { ClinicsModule } from './clinics/clinics.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -23,7 +23,13 @@ import { AuthModule } from './auth/auth.module';
         database: config.get<string>('DB_DATABASE'),
         synchronize: config.get<string>('DB_SYNC') === 'true',
         autoLoadEntities: true,
-        extra: { max: 10 }, // connection pool
+        // config.get<string>('DB_AUTO_LOAD_ENTITIES') === 'true',
+        logging: config.get<string>('DB_DEBUG_LOGGING') === 'true',
+        extra: {
+          max: config.get<number>('DB_POOL_MAX_HQ', 20),
+          min: config.get<number>('DB_POOL_MIN_HQ', 4),
+          idleTimeoutMillis: config.get<number>('DB_IDLE_TIMEOUT_HQ', 30000),
+        },
       }),
     }),
     BullModule.forRootAsync({

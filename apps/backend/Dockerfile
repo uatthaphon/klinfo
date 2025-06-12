@@ -11,7 +11,8 @@ COPY package.json pnpm-lock.yaml* ./
 COPY apps/backend/package.json ./apps/backend/
 
 # Install all workspace dependencies
-RUN pnpm install --frozen-lockfile
+# RUN pnpm install --frozen-lockfile
+RUN pnpm install
 
 # Second stage: copy source code
 FROM node:lts-alpine AS runner
