@@ -1,19 +1,10 @@
-"use client"
-
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Sparkles,
-} from "lucide-react"
+'use client';
 
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "@/components/ui/avatar"
+} from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,13 +13,32 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
+import { useTranslation } from "@/lib/i18n";
+import {
+  BadgeCheck,
+  Bell,
+  ChevronsUpDown,
+  CreditCard,
+  LogOut,
+  Sparkles,
+} from "lucide-react";
+
+const menuButtonClass = "data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground";
+const avatarClass = "h-8 w-8 rounded-lg";
+const userInfoClass = "grid flex-1 text-left text-sm leading-tight";
+const userNameClass = "truncate font-medium";
+const userEmailClass = "truncate text-xs";
+const dropdownIconClass = "ml-auto size-4";
+const dropdownContentClass = "w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg";
+const dropdownLabelClass = "p-0 font-normal";
+const dropdownLabelContentClass = "flex items-center gap-2 px-1 py-1.5 text-left text-sm";
 
 export function NavUser({
   user,
@@ -40,6 +50,7 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
+  const { t } = useTranslation();
 
   return (
     <SidebarMenu>
@@ -48,34 +59,34 @@ export function NavUser({
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className={menuButtonClass}
             >
-              <Avatar className="h-8 w-8 rounded-lg">
+              <Avatar className={avatarClass}>
                 <AvatarImage src={user.avatar} alt={user.name} />
                 <AvatarFallback className="rounded-lg">CN</AvatarFallback>
               </Avatar>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
+              <div className={userInfoClass}>
+                <span className={userNameClass}>{user.name}</span>
+                <span className={userEmailClass}>{user.email}</span>
               </div>
-              <ChevronsUpDown className="ml-auto size-4" />
+              <ChevronsUpDown className={dropdownIconClass} />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+            className={dropdownContentClass}
             side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}
           >
-            <DropdownMenuLabel className="p-0 font-normal">
-              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
+            <DropdownMenuLabel className={dropdownLabelClass}>
+              <div className={dropdownLabelContentClass}>
+                <Avatar className={avatarClass}>
                   <AvatarImage src={user.avatar} alt={user.name} />
                   <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                 </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
+                <div className={userInfoClass}>
+                  <span className={userNameClass}>{user.name}</span>
+                  <span className={userEmailClass}>{user.email}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
@@ -83,28 +94,28 @@ export function NavUser({
             <DropdownMenuGroup>
               <DropdownMenuItem>
                 <Sparkles />
-                Upgrade to Pro
+                {t("user.upgradePro")}
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
                 <BadgeCheck />
-                Account
+                {t("user.account")}
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <CreditCard />
-                Billing
+                {t("user.billing")}
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Bell />
-                Notifications
+                {t("user.notifications")}
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <LogOut />
-              Log out
+              {t("user.logout")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

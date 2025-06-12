@@ -5,176 +5,239 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { useTranslation } from '@lib/i18n'
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar"
 import { BarChart3, Bell, Building, FileText, LayoutTemplate, ListCheck, MapPin, ShieldCheck, ShoppingCart, User, User2, UserCog, Users } from "lucide-react"
 import { useState } from "react"
 
+// ClassName constants
+const flexWrapGroupClass = "flex flex-row flex-wrap items-center gap-12";
+const iconGraySmallClass = "h-5 w-5 text-gray-500";
+const tooltipTriggerClass = "cursor-pointer border-b border-dashed border-muted-foreground";
+const featureIconClass = "h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0";
+const pageClass = "min-h-screen bg-white py-16 px-4";
+const containerClass = "max-w-7xl mx-auto";
+const headerClass = "text-center mb-16";
+const headingClass = "text-5xl font-bold text-gray-900 mb-6";
+const trustRowClass = "flex items-center justify-center gap-8 mb-12 text-gray-600";
+const trustGroupClass = "flex items-center gap-2";
+const avatarGroupClass = "*:data-[slot=avatar]:ring-background flex -space-x-2 *:data-[slot=avatar]:ring-2 *:data-[slot=avatar]:grayscale";
+const billingTabsClass = "w-fit mx-auto rounded-full";
+const billingTabsListClass = "grid w-full h-full grid-cols-2 rounded-full";
+const pricingGridClass = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6";
+const cardBaseClass = "relative border rounded-xl p-6";
+const badgePopularClass = "absolute -top-3 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white";
+const cardTitleClass = "text-xl text-gray-900 mb-4 flex items-center gap-2";
+const cardPriceClass = "text-4xl font-bold text-gray-900";
+const cardPriceSuffixClass = "text-gray-600 ml-1";
+const cardInfoClass = "text-gray-600 text-sm";
+const buttonBaseClass = "w-full mb-6 rounded-full bg-blue-600 hover:bg-blue-700 text-white";
+const sectionTitleClass = "font-medium text-muted-foreground text-sm mb-2";
+const featureItemClass = "flex items-start gap-3";
+const featureTextClass = "text-sm";
+const iconAvailableClass = "text-green-600 font-semibold";
+const iconLimitedClass = "text-yellow-500 font-semibold";
+const iconUnavailableClass = "text-red-500 font-semibold";
+const avatarClass = "h-8 w-8 rounded-full";
+const avatarImageClass = "rounded-full";
+const avatarFallbackClass = "rounded-full";
+const tabsTriggerClass = "rounded-full text-2xl px-8";
+const tabsTriggerActiveClass = "bg-white text-blue-600 shadow-sm";
+const tabsTriggerInactiveClass = "text-gray-600 hover:text-gray-900";
+const badgeSaveClass = "ml-2 text-[12px] bg-blue-500 text-background";
+const sectionGroupClass = "space-y-4";
+const cardHeaderPaddingClass = "p-0";
+
 const plans = [
   {
-    name: "Free",
+    name: (t: any) => t("pricing.plan.free"),
     monthlyPrice: 0,
-    info: "20 patients / month",
-    tooltip: "Best for solo clinics just getting started",
+    info: (t: any) => t("pricing.info.free"),
+    tooltip: (t: any) => t("pricing.tooltips.free"),
     features: [
-      { icon: ListCheck, text: "Queue management", category: "Core Features", available: true },
-      { icon: Users, text: "Patient list", category: "Core Features", available: true },
-      { icon: MapPin, text: "Visit tracking", category: "Core Features", available: true },
-      { icon: ShoppingCart, text: "Order finalization by staff", category: "Core Features", available: false },
-      { icon: ShoppingCart, text: "Billing and payment handling", category: "Core Features", available: false },
-      { icon: FileText, text: "MC generator", category: "Core Features", available: false },
-      { icon: Bell, text: "Follow-up management", category: "Core Features", available: false },
-      { icon: LayoutTemplate, text: "MC templates", category: "Core Features", available: false },
-      { icon: LayoutTemplate, text: "Consultation templates", category: "Core Features", available: false },
-      { icon: LayoutTemplate, text: "Prescription templates", category: "Core Features", available: false },
-      { icon: User, text: "1 user (Owner or Doctor only)", category: "Team", available: true },
-      { icon: ShieldCheck, text: "Secure login access", category: "Security", available: true },
-      { icon: UserCog, text: "Role-based access controls", category: "Security", available: false },
-      { icon: BarChart3, text: "Reports & Insights", category: "Reports", available: false },
-      { icon: FileText, text: "Report export (Excel / PDF)", category: "Reports", available: false },
-      { icon: Building, text: "Multi-branch", category: "Business", available: false },
+      { icon: ListCheck, text: (t: any) => t("pricing.features.queueManagement"), category: "Core Features", available: true },
+      { icon: Users, text: (t: any) => t("pricing.features.patientList"), category: "Core Features", available: true },
+      { icon: MapPin, text: (t: any) => t("pricing.features.visitTracking"), category: "Core Features", available: true },
+      { icon: ShoppingCart, text: (t: any) => t("pricing.features.orderFinalization"), category: "Core Features", available: false },
+      { icon: ShoppingCart, text: (t: any) => t("pricing.features.billing"), category: "Core Features", available: false },
+      { icon: FileText, text: (t: any) => t("pricing.features.mcGenerator"), category: "Core Features", available: false },
+      { icon: Bell, text: (t: any) => t("pricing.features.followUp"), category: "Core Features", available: false },
+      { icon: LayoutTemplate, text: (t: any) => t("pricing.features.mcTemplates"), category: "Core Features", available: false },
+      { icon: LayoutTemplate, text: (t: any) => t("pricing.features.consultationTemplates"), category: "Core Features", available: false },
+      { icon: LayoutTemplate, text: (t: any) => t("pricing.features.prescriptionTemplates"), category: "Core Features", available: false },
+      { icon: User, text: (t: any) => t("pricing.features.oneUser"), category: "Team", available: true },
+      { icon: ShieldCheck, text: (t: any) => t("pricing.features.secureLogin"), category: "Security", available: true },
+      { icon: UserCog, text: (t: any) => t("pricing.features.roleAccess"), category: "Security", available: false },
+      { icon: BarChart3, text: (t: any) => t("pricing.features.insights"), category: "Reports", available: false },
+      { icon: FileText, text: (t: any) => t("pricing.features.export"), category: "Reports", available: false },
+      { icon: Building, text: (t: any) => t("pricing.features.multiBranch"), category: "Business", available: false },
     ],
     popular: false,
   },
   {
-    name: "Standard",
+    name: (t: any) => t("pricing.plan.standard"),
     monthlyPrice: 490,
-    info: "Unlimited patients",
-    tooltip: "Ideal for small clinics with a few staff",
+    info: (t: any) => t("pricing.info.standard"),
+    tooltip: (t: any) => t("pricing.tooltips.standard"),
     features: [
-      { icon: ListCheck, text: "Queue management", category: "Core Features", available: true },
-      { icon: Users, text: "Patient list", category: "Core Features", available: true },
-      { icon: MapPin, text: "Visit tracking", category: "Core Features", available: true },
-      { icon: ShoppingCart, text: "Order finalization by staff", category: "Core Features", available: true },
-      { icon: ShoppingCart, text: "Billing and payment handling", category: "Core Features", available: true },
-      { icon: FileText, text: "MC generator", category: "Core Features", available: true },
-      { icon: Bell, text: "Follow-up management", category: "Core Features", available: true },
-      { icon: LayoutTemplate, text: "MC templates (Limit 2)", category: "Core Features", available: true, limit: true },
-      { icon: LayoutTemplate, text: "Consultation templates (Limit 2)", category: "Core Features", available: true, limit: true },
-      { icon: LayoutTemplate, text: "Prescription templates (Limit 2)", category: "Core Features", available: true, limit: true },
-      { icon: Users, text: "3 staff members", category: "Team", available: true },
-      { icon: ShieldCheck, text: "Secure login access", category: "Security", available: true },
-      { icon: UserCog, text: "Role-based access controls", category: "Security", available: false },
-      { icon: BarChart3, text: "Reports & Insights (Basic)", category: "Reports", available: true, limit: true },
-      { icon: FileText, text: "Report export (Excel / PDF)", category: "Reports", available: false },
-      { icon: Building, text: "Multi-branch", category: "Business", available: false },
+      { icon: ListCheck, text: (t: any) => t("pricing.features.queueManagement"), category: "Core Features", available: true },
+      { icon: Users, text: (t: any) => t("pricing.features.patientList"), category: "Core Features", available: true },
+      { icon: MapPin, text: (t: any) => t("pricing.features.visitTracking"), category: "Core Features", available: true },
+      { icon: ShoppingCart, text: (t: any) => t("pricing.features.orderFinalization"), category: "Core Features", available: true },
+      { icon: ShoppingCart, text: (t: any) => t("pricing.features.billing"), category: "Core Features", available: true },
+      { icon: FileText, text: (t: any) => t("pricing.features.mcGenerator"), category: "Core Features", available: true },
+      { icon: Bell, text: (t: any) => t("pricing.features.followUp"), category: "Core Features", available: true },
+      { icon: LayoutTemplate, text: (t: any) => t("pricing.features.mcTemplates") + " (Limit 2)", category: "Core Features", available: true, limit: true },
+      { icon: LayoutTemplate, text: (t: any) => t("pricing.features.consultationTemplates") + " (Limit 2)", category: "Core Features", available: true, limit: true },
+      { icon: LayoutTemplate, text: (t: any) => t("pricing.features.prescriptionTemplates") + " (Limit 2)", category: "Core Features", available: true, limit: true },
+      { icon: Users, text: (t: any) => t("pricing.features.staff3"), category: "Team", available: true },
+      { icon: ShieldCheck, text: (t: any) => t("pricing.features.secureLogin"), category: "Security", available: true },
+      { icon: UserCog, text: (t: any) => t("pricing.features.roleAccess"), category: "Security", available: false },
+      { icon: BarChart3, text: (t: any) => t("pricing.features.insights") + " (Basic)", category: "Reports", available: true, limit: true },
+      { icon: FileText, text: (t: any) => t("pricing.features.export"), category: "Reports", available: false },
+      { icon: Building, text: (t: any) => t("pricing.features.multiBranch"), category: "Business", available: false },
     ],
     popular: false,
   },
   {
-    name: "Pro",
+    name: (t: any) => t("pricing.plan.pro"),
     monthlyPrice: 990,
-    info: "Everything in Standard",
-    tooltip: "Great for growing clinics with more needs",
+    info: (t: any) => t("pricing.info.pro"),
+    tooltip: (t: any) => t("pricing.tooltips.pro"),
     features: [
-      { icon: ListCheck, text: "Queue management", category: "Core Features", available: true },
-      { icon: Users, text: "Patient list", category: "Core Features", available: true },
-      { icon: MapPin, text: "Visit tracking", category: "Core Features", available: true },
-      { icon: ShoppingCart, text: "Order finalization by staff", category: "Core Features", available: true },
-      { icon: ShoppingCart, text: "Billing and payment handling", category: "Core Features", available: true },
-      { icon: FileText, text: "MC generator", category: "Core Features", available: true },
-      { icon: Bell, text: "Follow-up management", category: "Core Features", available: true },
-      { icon: LayoutTemplate, text: "MC templates", category: "Core Features", available: true },
-      { icon: LayoutTemplate, text: "Consultation templates", category: "Core Features", available: true },
-      { icon: LayoutTemplate, text: "Prescription templates", category: "Core Features", available: true },
-      { icon: User2, text: "Unlimited staff", category: "Team", available: true },
-      { icon: ShieldCheck, text: "Secure login access", category: "Security", available: true },
-      { icon: UserCog, text: "Role-based access controls", category: "Security", available: true },
-      { icon: BarChart3, text: "Reports & Insights", category: "Reports", available: true },
-      { icon: FileText, text: "Report export (Excel / PDF)", category: "Reports", available: true },
-      { icon: Building, text: "Multi-branch", category: "Business", available: false },
+      { icon: ListCheck, text: (t: any) => t("pricing.features.queueManagement"), category: "Core Features", available: true },
+      { icon: Users, text: (t: any) => t("pricing.features.patientList"), category: "Core Features", available: true },
+      { icon: MapPin, text: (t: any) => t("pricing.features.visitTracking"), category: "Core Features", available: true },
+      { icon: ShoppingCart, text: (t: any) => t("pricing.features.orderFinalization"), category: "Core Features", available: true },
+      { icon: ShoppingCart, text: (t: any) => t("pricing.features.billing"), category: "Core Features", available: true },
+      { icon: FileText, text: (t: any) => t("pricing.features.mcGenerator"), category: "Core Features", available: true },
+      { icon: Bell, text: (t: any) => t("pricing.features.followUp"), category: "Core Features", available: true },
+      { icon: LayoutTemplate, text: (t: any) => t("pricing.features.mcTemplates"), category: "Core Features", available: true },
+      { icon: LayoutTemplate, text: (t: any) => t("pricing.features.consultationTemplates"), category: "Core Features", available: true },
+      { icon: LayoutTemplate, text: (t: any) => t("pricing.features.prescriptionTemplates"), category: "Core Features", available: true },
+      { icon: User2, text: (t: any) => t("pricing.features.unlimitedStaff"), category: "Team", available: true },
+      { icon: ShieldCheck, text: (t: any) => t("pricing.features.secureLogin"), category: "Security", available: true },
+      { icon: UserCog, text: (t: any) => t("pricing.features.roleAccess"), category: "Security", available: true },
+      { icon: BarChart3, text: (t: any) => t("pricing.features.insights"), category: "Reports", available: true },
+      { icon: FileText, text: (t: any) => t("pricing.features.export"), category: "Reports", available: true },
+      { icon: Building, text: (t: any) => t("pricing.features.multiBranch"), category: "Business", available: false },
     ],
     popular: true,
   },
   {
-    name: "Premium",
+    name: (t: any) => t("pricing.plan.premium"),
     monthlyPrice: 1490,
-    info: "Up to 3 branches",
-    tooltip: "Designed for clinics with multiple branches",
+    info: (t: any) => t("pricing.info.premium"),
+    tooltip: (t: any) => t("pricing.tooltips.premium"),
     features: [
-      { icon: ListCheck, text: "Queue management", category: "Core Features", available: true },
-      { icon: Users, text: "Patient list", category: "Core Features", available: true },
-      { icon: MapPin, text: "Visit tracking", category: "Core Features", available: true },
-      { icon: ShoppingCart, text: "Order finalization by staff", category: "Core Features", available: true },
-      { icon: ShoppingCart, text: "Billing and payment handling", category: "Core Features", available: true },
-      { icon: FileText, text: "MC generator", category: "Core Features", available: true },
-      { icon: Bell, text: "Follow-up management", category: "Core Features", available: true },
-      { icon: LayoutTemplate, text: "MC templates", category: "Core Features", available: true },
-      { icon: LayoutTemplate, text: "Consultation templates", category: "Core Features", available: true },
-      { icon: LayoutTemplate, text: "Prescription templates", category: "Core Features", available: true },
-      { icon: User2, text: "Unlimited staff", category: "Team", available: true },
-      { icon: ShieldCheck, text: "Secure login access", category: "Security", available: true },
-      { icon: UserCog, text: "Role-based access controls", category: "Security", available: true },
-      { icon: BarChart3, text: "Reports & Insights", category: "Reports", available: true },
-      { icon: FileText, text: "Report export (Excel / PDF)", category: "Reports", available: true },
-      { icon: Building, text: "Multi-branch (up to 3)", category: "Business", available: true },
+      { icon: ListCheck, text: (t: any) => t("pricing.features.queueManagement"), category: "Core Features", available: true },
+      { icon: Users, text: (t: any) => t("pricing.features.patientList"), category: "Core Features", available: true },
+      { icon: MapPin, text: (t: any) => t("pricing.features.visitTracking"), category: "Core Features", available: true },
+      { icon: ShoppingCart, text: (t: any) => t("pricing.features.orderFinalization"), category: "Core Features", available: true },
+      { icon: ShoppingCart, text: (t: any) => t("pricing.features.billing"), category: "Core Features", available: true },
+      { icon: FileText, text: (t: any) => t("pricing.features.mcGenerator"), category: "Core Features", available: true },
+      { icon: Bell, text: (t: any) => t("pricing.features.followUp"), category: "Core Features", available: true },
+      { icon: LayoutTemplate, text: (t: any) => t("pricing.features.mcTemplates"), category: "Core Features", available: true },
+      { icon: LayoutTemplate, text: (t: any) => t("pricing.features.consultationTemplates"), category: "Core Features", available: true },
+      { icon: LayoutTemplate, text: (t: any) => t("pricing.features.prescriptionTemplates"), category: "Core Features", available: true },
+      { icon: User2, text: (t: any) => t("pricing.features.unlimitedStaff"), category: "Team", available: true },
+      { icon: ShieldCheck, text: (t: any) => t("pricing.features.secureLogin"), category: "Security", available: true },
+      { icon: UserCog, text: (t: any) => t("pricing.features.roleAccess"), category: "Security", available: true },
+      { icon: BarChart3, text: (t: any) => t("pricing.features.insights"), category: "Reports", available: true },
+      { icon: FileText, text: (t: any) => t("pricing.features.export"), category: "Reports", available: true },
+      { icon: Building, text: (t: any) => t("pricing.features.multiBranchLimit"), category: "Business", available: true },
     ],
     popular: false,
   },
 ];
 export default function PricingPage() {
+  const { t } = useTranslation();
   const [billingCycle, setBillingCycle] = useState("monthly")
 
   const formatPrice = (price: number, isYearly: boolean) => {
-    if (price === 0) return "Free"
+    if (price === 0) return t("pricing.plan.free")
     const finalPrice = isYearly ? Math.round(price * 0.8) : price
     return `฿${finalPrice.toLocaleString()}`
   }
 
   const isYearly = billingCycle === "yearly"
 
+  // Evaluate plan values with t
+  const evaluatedPlans = plans.map(plan => ({
+    ...plan,
+    name: typeof plan.name === "function" ? plan.name(t) : plan.name,
+    info: typeof plan.info === "function" ? plan.info(t) : plan.info,
+    tooltip: typeof plan.tooltip === "function" ? plan.tooltip(t) : plan.tooltip,
+    features: plan.features.map(feature => ({
+      ...feature,
+      text: typeof feature.text === "function" ? feature.text(t) : feature.text,
+    })),
+  }))
+
   return (
-    <div className="min-h-screen bg-white py-16 px-4">
-      <div className="max-w-7xl mx-auto">
+    <div className={pageClass}>
+      <div className={containerClass}>
         {/* Header */}
-        <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold text-gray-900 mb-6">Choose the right plan for you</h1>
+        <div className={headerClass}>
+          <h1 className={headingClass}>{t("pricing.choosePlan")}</h1>
 
           {/* Trust indicators */}
-          <div className="flex items-center justify-center gap-8 mb-12 text-gray-600">
-            <div className="flex items-center gap-2">
-              <div className="flex flex-row flex-wrap items-center gap-12">
-                <div className="*:data-[slot=avatar]:ring-background flex -space-x-2 *:data-[slot=avatar]:ring-2 *:data-[slot=avatar]:grayscale">
-                  <Avatar className="h-8 w-8 rounded-full">
+          <div className={trustRowClass}>
+            <div className={trustGroupClass}>
+              <div className={flexWrapGroupClass}>
+                <div className={avatarGroupClass}>
+                  <Avatar className={avatarClass}>
                     <AvatarImage
-                      className="rounded-full"
+                      className={avatarImageClass}
                       src="https://github.com/shadcn.png"
                       alt="@shadcn"
                     />
-                    <AvatarFallback className="rounded-full">CN</AvatarFallback>
+                    <AvatarFallback className={avatarFallbackClass}>CN</AvatarFallback>
                   </Avatar>
-                  <Avatar className="h-8 w-8 rounded-full">
+                  <Avatar className={avatarClass}>
                     <AvatarImage
-                      className="rounded-full"
+                      className={avatarImageClass}
                       src="https://github.com/leerob.png"
                       alt="@leerob"
                     />
-                    <AvatarFallback className="rounded-full">LR</AvatarFallback>
+                    <AvatarFallback className={avatarFallbackClass}>LR</AvatarFallback>
                   </Avatar>
-                  <Avatar className="h-8 w-8 rounded-full">
+                  <Avatar className={avatarClass}>
                     <AvatarImage
-                      className="rounded-full"
+                      className={avatarImageClass}
                       src="https://github.com/evilrabbit.png"
                       alt="@evilrabbit"
                     />
-                    <AvatarFallback className="rounded-full">ER</AvatarFallback>
+                    <AvatarFallback className={avatarFallbackClass}>ER</AvatarFallback>
                   </Avatar>
                 </div>
               </div>
-              <span className="font-medium">50K+ clinics trust us</span>
+              <span className="font-medium">{t("pricing.clinicsTrust")}</span>
             </div>
             <span className="text-gray-400">|</span>
-            <span>Cancel any time, without any hassle</span>
+            <span>{t("pricing.cancelAnytime")}</span>
           </div>
 
           {/* Billing Toggle */}
-          <Tabs value={billingCycle} onValueChange={setBillingCycle} className="w-fit mx-auto rounded-full">
-            <TabsList className="grid w-full h-full grid-cols-2 rounded-full">
-              <TabsTrigger value="monthly" className={`rounded-full text-2xl px-8 ${billingCycle === "monthly" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:text-gray-900"}`}>Monthly</TabsTrigger>
-              <TabsTrigger value="yearly" className={`relative rounded-full text-2xl px-8 ${billingCycle === "yearly" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:text-gray-900"
-                }`}>
-                Yearly
-                <Badge variant="secondary" className="ml-2 text-[12px] bg-blue-500 text-background">
-                  Save 20%
+          <Tabs value={billingCycle} onValueChange={setBillingCycle} className={billingTabsClass}>
+            <TabsList className={billingTabsListClass}>
+              <TabsTrigger
+                value="monthly"
+                className={
+                  `${tabsTriggerClass} ${billingCycle === "monthly" ? tabsTriggerActiveClass : tabsTriggerInactiveClass}`
+                }
+              >
+                {t("pricing.monthly")}
+              </TabsTrigger>
+              <TabsTrigger
+                value="yearly"
+                className={
+                  `relative ${tabsTriggerClass} ${billingCycle === "yearly" ? tabsTriggerActiveClass : tabsTriggerInactiveClass}`
+                }
+              >
+                {t("pricing.yearly")}
+                <Badge variant="secondary" className={badgeSaveClass}>
+                  {t("pricing.save")}
                 </Badge>
               </TabsTrigger>
             </TabsList>
@@ -182,56 +245,56 @@ export default function PricingPage() {
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {plans.map((plan, index) => (
+        <div className={pricingGridClass}>
+          {evaluatedPlans.map((plan, index) => (
             <Card
               key={index}
-              className={`relative border rounded-xl p-6 ${plan.popular ? "border-blue-200 shadow-lg" : "border-gray-200"
+              className={`${cardBaseClass} ${plan.popular ? "border-blue-200 shadow-lg" : "border-gray-200"
                 }`}
             >
               {plan.popular && (
-                <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white">
+                <Badge className={badgePopularClass}>
+                  {/* Not in dictionary, keep as is or add if needed */}
                   Popular
                 </Badge>
               )}
 
-              <CardHeader className="p-0">
-                <h3 className="text-xl text-gray-900 mb-4 flex items-center gap-2">
-                  {plan.name === "Free" && <User className="h-5 w-5 text-gray-500" />}
-                  {plan.name === "Standard" && <Users className="h-5 w-5 text-gray-500" />}
-                  {plan.name === "Pro" && <UserCog className="h-5 w-5 text-gray-500" />}
-                  {plan.name === "Premium" && <Building className="h-5 w-5 text-gray-500" />}
-                  {plan.name} Plan
+              <CardHeader className={cardHeaderPaddingClass}>
+                <h3 className={cardTitleClass}>
+                  {plan.name === t("pricing.plan.free") && <User className={iconGraySmallClass} />}
+                  {plan.name === t("pricing.plan.standard") && <Users className={iconGraySmallClass} />}
+                  {plan.name === t("pricing.plan.pro") && <UserCog className={iconGraySmallClass} />}
+                  {plan.name === t("pricing.plan.premium") && <Building className={iconGraySmallClass} />}
+                  {t("pricing.getPlan", { plan: plan.name })}
                 </h3>
                 <div className="mb-2">
-                  <span className="text-4xl font-bold text-gray-900">{formatPrice(plan.monthlyPrice, isYearly)}</span>
-                  {plan.monthlyPrice > 0 && <span className="text-gray-600 ml-1">/mo</span>}
+                  <span className={cardPriceClass}>{formatPrice(plan.monthlyPrice, isYearly)}</span>
+                  {plan.monthlyPrice > 0 && <span className={cardPriceSuffixClass}>{t("pricing.perMonth")}</span>}
                 </div>
-                <p className="text-gray-600 text-sm">
+                <p className={cardInfoClass}>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <span className="cursor-pointer border-b border-dashed border-muted-foreground">
-                        {plan.info}
+                      <span className={tooltipTriggerClass}>
+                        {t("pricing.infoLabel", { info: plan.info })}
                       </span>
                     </TooltipTrigger>
                     <TooltipContent side="top">
-                      <p>{plan.tooltip}</p>
+                      <p>{t("pricing.tooltipText", { tooltip: plan.tooltip })}</p>
                     </TooltipContent>
                   </Tooltip>
                 </p>
               </CardHeader>
 
-              <CardContent className="p-0">
+              <CardContent className={cardHeaderPaddingClass}>
                 <Button
-                  className={`w-full mb-6 rounded-full ${plan.popular
-                    ? "bg-blue-600 hover:bg-blue-700 text-white"
-                    : "bg-blue-600 hover:bg-blue-700 text-white"
-                    }`}
+                  className={buttonBaseClass}
                 >
-                  {plan.name === "Premium" ? "Contact Sale" : `Get ${plan.name} Plan`}
+                  {plan.name === t("pricing.plan.premium")
+                    ? t("pricing.contactSales")
+                    : t("pricing.getPlan", { plan: plan.name })}
                 </Button>
 
-                <div className="space-y-4">
+                <div className={sectionGroupClass}>
                   {/* Group features by category */}
                   {[
                     "Core Features",
@@ -248,20 +311,20 @@ export default function PricingPage() {
 
                     return (
                       <div key={category}>
-                        <h4 className="font-medium text-muted-foreground text-sm mb-2">{category}</h4>
+                        <h4 className={sectionTitleClass}>{category}</h4>
                         <ul className="space-y-2">
                           {categoryFeatures.map((feature, featureIndex) => (
-                            <li key={featureIndex} className="flex items-start gap-3">
-                              <feature.icon className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
-                              <span className="text-sm">
+                            <li key={featureIndex} className={featureItemClass}>
+                              <feature.icon className={featureIconClass} />
+                              <span className={featureTextClass}>
                                 {feature.available === true && !feature?.limit && (
-                                  <span className="text-green-600 font-semibold">✓</span>
+                                  <span className={iconAvailableClass}>✓</span>
                                 )}
                                 {feature.available === true && feature.limit && (
-                                  <span className="text-yellow-500 font-semibold">●</span>
+                                  <span className={iconLimitedClass}>●</span>
                                 )}
                                 {feature.available === false && (
-                                  <span className="text-red-500 font-semibold">✗</span>
+                                  <span className={iconUnavailableClass}>✗</span>
                                 )} {feature.text}
                               </span>
                             </li>

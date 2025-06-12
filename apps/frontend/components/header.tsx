@@ -7,6 +7,14 @@ import { HTMLAttributes, Ref, useEffect, useState } from 'react';
 import { ProfileDropdown } from './profile-dropdown';
 import { ModeToggle } from './ui/mode-toggle';
 
+const headerBaseClass = "bg-background flex h-16 items-center gap-3 p-4 sm:gap-4";
+const headerFixedClass = "header-fixed peer/header fixed z-50 w-[-webkit-fill-available]";
+const shadowClass = "shadow-sm";
+const noShadowClass = "shadow-none";
+const sidebarTriggerClass = "-ml-1";
+const separatorClass = "mr-2 data-[orientation=vertical]:h-4";
+const rightControlsClass = "ml-auto flex items-center space-x-4";
+
 interface HeaderProps extends HTMLAttributes<HTMLElement> {
   user: {
     name: string
@@ -41,20 +49,20 @@ export const Header = ({
   return (
     <header
       className={cn(
-        'bg-background flex h-16 items-center gap-3 p-4 sm:gap-4',
-        fixed && 'header-fixed peer/header fixed z-50 w-[-webkit-fill-available]',
-        offset > 10 && fixed ? 'shadow-sm' : 'shadow-none',
+        headerBaseClass,
+        fixed && headerFixedClass,
+        offset > 10 && fixed ? shadowClass : noShadowClass,
         className
       )}
       {...props}
     >
-      <SidebarTrigger className="-ml-1" />
+      <SidebarTrigger className={sidebarTriggerClass} />
       <Separator
         orientation="vertical"
-        className="mr-2 data-[orientation=vertical]:h-4"
+        className={separatorClass}
       />
       {children}
-      <div className='ml-auto flex items-center space-x-4'>
+      <div className={rightControlsClass}>
         <ModeToggle />
         <ProfileDropdown user={user} />
       </div>
