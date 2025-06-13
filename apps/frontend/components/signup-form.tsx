@@ -1,21 +1,20 @@
 'use client';
 
-import { signup } from '@/lib/api/auth';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { PasswordInput } from '@/components/ui/password-input';
+import { signup } from '@/lib/api/auth';
 import { mapSignupErrorCode } from '@/lib/api/error-handler';
 import { useTranslation } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
+import { zodResolver } from '@hookform/resolvers/zod';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
 
 const formRootClass = 'flex flex-col gap-4';
 const cardClass = 'overflow-hidden p-0';
@@ -49,9 +48,7 @@ export function SignUpForm({ className, ...props }: React.ComponentProps<'div'>)
         .min(1, `${t('auth.requiredField')} (${t('auth.email')})`)
         .email(t('auth.invalidEmail')),
       password: z.string().min(6, t('auth.passwordTooShort')),
-      confirmPassword: z
-        .string()
-        .min(1, `${t('auth.requiredField')} (${t('auth.confirmPassword')})`),
+      confirmPassword: z.string().min(1, `${t('auth.requiredField')} (${t('auth.confirmPassword')})`),
     })
     .refine((data) => data.password === data.confirmPassword, {
       path: ['confirmPassword'],
@@ -168,9 +165,7 @@ export function SignUpForm({ className, ...props }: React.ComponentProps<'div'>)
               <Button type="submit" className={submitButtonClass} disabled={isSubmitting}>
                 {isSubmitting ? t('auth.loading') : t('auth.signup')}
               </Button>
-              {serverError && (
-                <p className="text-destructive text-sm text-center">{serverError}</p>
-              )}
+              {serverError && <p className="text-destructive text-sm text-center">{serverError}</p>}
               <div className={loginLinkWrapperClass}>
                 {t('auth.haveAccount')}{' '}
                 <Link href="/auth/login" className={loginLinkClass}>
