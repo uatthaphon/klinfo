@@ -43,6 +43,11 @@ export class AuthService {
       password: hashedPassword,
     });
     await this.userRepository.save(user);
+    const verifyToken = await this.jwtService.signAsync(
+      { sub: user.id, purpose: 'verify' },
+      { expiresIn: '1d' },
+    );
+    await this.mailService.sendEmailVerification(user.email, verifyToken);
     const accessToken = await this.jwtService.signAsync({ sub: user.id });
     return {
       success: true,
@@ -126,6 +131,36 @@ export class AuthService {
     return {
       success: true,
       ...ResponseMeta.Auth.PasswordResetSuccess,
+      data: null,
+    };
+  }
+
+  async verifyEmail(email: string, token: string): Promise<any> {
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (!user) {
+      throw new BadRequestException({
+        success: false,
+        ...ResponseMeta.Auth.UserNotFound,
+        data: null,
+      });
+    }
+    try {
+      const payload = await this.jwtService.verifyAsync<{ sub: string; purpose: string }>(token);
+      if (payload.sub !== user.id || payload.purpose !== 'verify') {
+        throw new Error('invalid');
+      }
+    } catch (e) {
+      throw new UnauthorizedException({
+        success: false,
+        ...ResponseMeta.Auth.InvalidResetToken,
+        data: null,
+      });
+    }
+    user.isEmailVerified = true;
+    await this.userRepository.save(user);
+    return {
+      success: true,
+      ...ResponseMeta.Auth.EmailVerified,
       data: null,
     };
   }

@@ -31,6 +31,16 @@ export const ResponseMeta = {
       message: 'Password reset email sent',
       statusCode: HttpStatus.OK,
     },
+    VerificationEmailSent: {
+      code: 'AUTH_VERIFICATION_EMAIL_SENT',
+      message: 'Verification email sent',
+      statusCode: HttpStatus.OK,
+    },
+    EmailVerified: {
+      code: 'AUTH_EMAIL_VERIFIED',
+      message: 'Email verified',
+      statusCode: HttpStatus.OK,
+    },
     UserNotFound: {
       code: 'AUTH_USER_NOT_FOUND',
       message: 'User not found',
@@ -40,6 +50,13 @@ export const ResponseMeta = {
       code: 'AUTH_INVALID_TOKEN',
       message: 'Invalid email or token',
       statusCode: HttpStatus.UNAUTHORIZED,
+    },
+  },
+  Clinics: {
+    Created: {
+      code: 'CLINIC_CREATED',
+      message: 'Clinic created',
+      statusCode: HttpStatus.CREATED,
     },
   },
 };

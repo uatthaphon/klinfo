@@ -103,4 +103,18 @@ export default {
     notifications: 'การแจ้งเตือน',
     logout: 'ออกจากระบบ',
   },
+  onboarding: {
+    accountCreated: 'ยินดีต้อนรับ {{name}}! บัญชีของคุณถูกสร้างแล้ว',
+    continueToDashboard: 'ไปยังแดชบอร์ด',
+    verifyEmail: 'กรุณายืนยันอีเมลเพื่อเปิดใช้งานบัญชี',
+    resendEmail: 'ส่งอีเมลอีกครั้ง',
+    goToLogin: 'ไปยังหน้าเข้าสู่ระบบ',
+    firstTimeSetup: 'ตั้งค่าครั้งแรก',
+    clinicName: 'ชื่อคลินิก',
+    timezone: 'เขตเวลา',
+    language: 'ภาษา',
+    inviteTeamOptional: 'เชิญทีม (ไม่บังคับ)',
+    setupServicesOptional: 'ตั้งค่าบริการ/สินค้า (ไม่บังคับ)',
+    saveContinue: 'บันทึกและดำเนินการต่อ',
+  },
 } as const;

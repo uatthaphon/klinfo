@@ -103,4 +103,18 @@ export default {
     notifications: 'Notifications',
     logout: 'Log out',
   },
+  onboarding: {
+    accountCreated: 'Welcome, {{name}}! Your account has been created.',
+    continueToDashboard: 'Continue to Dashboard',
+    verifyEmail: 'Please verify your email address to activate your account.',
+    resendEmail: 'Resend email',
+    goToLogin: 'Go to Login',
+    firstTimeSetup: 'First-time setup',
+    clinicName: 'Clinic name',
+    timezone: 'Timezone',
+    language: 'Language',
+    inviteTeamOptional: 'Invite team (optional)',
+    setupServicesOptional: 'Setup services/products (optional)',
+    saveContinue: 'Save and continue',
+  },
 } as const;
