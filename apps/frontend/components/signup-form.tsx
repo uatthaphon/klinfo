@@ -74,10 +74,11 @@ export function SignUpForm({ className, ...props }: React.ComponentProps<'div'>)
         name: values.name,
         email: values.email,
         password: values.password,
-      })
+      });
       if (res?.data?.accessToken) {
-        localStorage.setItem('accessToken', res.data.accessToken)
+        localStorage.setItem('accessToken', res.data.accessToken);
       }
+
       localStorage.setItem('userName', values.name)
       localStorage.setItem('userEmail', values.email)
       router.push(
@@ -89,7 +90,7 @@ export function SignUpForm({ className, ...props }: React.ComponentProps<'div'>)
       if (mapped?.field) {
         setFormError(mapped.field as keyof FormValues, { type: 'server', message: mapped.message });
       } else {
-        setServerError(t(`auth.errorCodes.${code}`) || t('auth.errorCodes.unknown'));
+        setServerError(t(`auth.errorCodes.${code}`) || t('auth.errorCodes.UNKNOWN'));
       }
     }
   };

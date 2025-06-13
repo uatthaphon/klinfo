@@ -33,7 +33,7 @@ export class MailService {
   }
 
   async sendPasswordReset(to: string, token: string) {
-    const appUrl = this.config.get<string>('APP_URL') || 'http://localhost:3001';
+    const appUrl = this.config.get<string>('FRONTEND_URL') || 'http://localhost:3001';
     const resetLink = `${appUrl}/auth/reset-password?token=${token}&email=${encodeURIComponent(to)}`;
     const message = {
       from: this.config.get<string>('SMTP_FROM', 'noreply@example.com'),
@@ -50,7 +50,7 @@ export class MailService {
   }
 
   async sendEmailVerification(to: string, token: string) {
-    const appUrl = this.config.get<string>('APP_URL') || 'http://localhost:3001';
+    const appUrl = this.config.get<string>('FRONTEND_URL') || 'http://localhost:3001';
     const verifyLink = `${appUrl}/auth/verify-email?token=${token}&email=${encodeURIComponent(to)}`;
     const message = {
       from: this.config.get<string>('SMTP_FROM', 'noreply@example.com'),
