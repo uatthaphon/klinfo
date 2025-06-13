@@ -7,10 +7,10 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useTranslation } from '@/lib/i18n';
+import { Plus, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { Plus, Trash2 } from 'lucide-react';
 
 const containerClass = 'bg-muted flex min-h-screen flex-col items-center justify-center p-4 md:p-8';
 const mainClass = 'w-full max-w-3xl';
@@ -24,6 +24,7 @@ const footerClass = 'flex justify-between';
 const titleClass = 'text-2xl';
 const spaceY2Class = 'space-y-2';
 const spaceY4Class = 'space-y-4';
+const spaceY5Class = 'space-y-5';
 const inviteDescClass = 'text-sm text-gray-500';
 const gridHeadClass = 'grid grid-cols-1 gap-4 md:grid-cols-3 font-medium';
 const gridRowClass = 'grid grid-cols-1 gap-4 md:grid-cols-3 items-end';
@@ -34,6 +35,7 @@ const plusIconClass = 'mr-2 h-4 w-4';
 const priceHeadClass = 'md:col-span-2 text-right md:text-left';
 const serviceInputClass = 'md:col-span-2';
 const footerButtonsClass = 'flex space-x-2';
+const timezoneTextClass = 'text-muted-foreground indent-2';
 
 export default function SetupPage() {
   const { t } = useTranslation();
@@ -93,9 +95,10 @@ export default function SetupPage() {
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className={spaceY2Class}>
+                  <div className={spaceY5Class}>
+                    <Label htmlFor="timezone">{t('onboarding.timezone')}</Label>
                     <input type="hidden" id="timezone" value="Asia/Bangkok" />
-                    <Label htmlFor="timezone">{t('onboarding.timezone')} (UTC+7)</Label>
+                    <Label className={timezoneTextClass}>{`${t('onboarding.timezones.bangkok')} (UTC+7)`}</Label>
                   </div>
                 </div>
                 <div className={spaceY2Class}>
@@ -151,11 +154,8 @@ export default function SetupPage() {
                           size="icon"
                           variant="ghost"
                           onClick={() =>
-                            setTeamMembers((prev) =>
-                              prev.length > 1 ? prev.filter((_, i) => i !== index) : prev,
-                            )
-                          }
-                        >
+                            setTeamMembers((prev) => (prev.length > 1 ? prev.filter((_, i) => i !== index) : prev))
+                          }>
                           <Trash2 className={iconSmallClass} />
                         </Button>
                       </div>
@@ -165,10 +165,7 @@ export default function SetupPage() {
                     variant="outline"
                     className={addButtonClass}
                     type="button"
-                    onClick={() =>
-                      setTeamMembers((prev) => [...prev, { id: Date.now() }])
-                    }
-                  >
+                    onClick={() => setTeamMembers((prev) => [...prev, { id: Date.now() }])}>
                     <Plus className={plusIconClass} />
                     {t('onboarding.addAnotherTeamMember')}
                   </Button>
@@ -186,7 +183,11 @@ export default function SetupPage() {
                 <div className={spaceY4Class}>
                   {servicesList.map((service, index) => (
                     <div key={service.id} className={gridRowClass}>
-                      <Input id={`service-${index}`} placeholder="e.g., Annual Check-up" className={serviceInputClass} />
+                      <Input
+                        id={`service-${index}`}
+                        placeholder="e.g., Annual Check-up"
+                        className={serviceInputClass}
+                      />
                       <div className={flexRowClass}>
                         <Input id={`price-${index}`} type="number" placeholder="0.00" />
                         <span>฿</span>
@@ -195,11 +196,8 @@ export default function SetupPage() {
                           size="icon"
                           variant="ghost"
                           onClick={() =>
-                            setServicesList((prev) =>
-                              prev.length > 1 ? prev.filter((_, i) => i !== index) : prev,
-                            )
-                          }
-                        >
+                            setServicesList((prev) => (prev.length > 1 ? prev.filter((_, i) => i !== index) : prev))
+                          }>
                           <Trash2 className={iconSmallClass} />
                         </Button>
                       </div>
@@ -209,10 +207,7 @@ export default function SetupPage() {
                     variant="outline"
                     className={addButtonClass}
                     type="button"
-                    onClick={() =>
-                      setServicesList((prev) => [...prev, { id: Date.now() }])
-                    }
-                  >
+                    onClick={() => setServicesList((prev) => [...prev, { id: Date.now() }])}>
                     <Plus className={plusIconClass} />
                     {t('onboarding.addAnotherService')}
                   </Button>

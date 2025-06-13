@@ -1,7 +1,7 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { verifyEmail, resendVerificationEmail } from '@/lib/api/auth';
+import { resendVerificationEmail, verifyEmail } from '@/lib/api/auth';
 import { useTranslation } from '@/lib/i18n';
 import { Mail } from 'lucide-react';
 import Link from 'next/link';
@@ -19,6 +19,7 @@ const messageClass = 'text-center text-sm text-muted-foreground';
 const resendWrapperClass = 'text-center text-sm text-muted-foreground';
 const resendLinkClass = 'text-primary underline-offset-4 hover:underline';
 const errorMessageClass = 'text-center text-sm text-destructive';
+const successMessageClass = 'text-center text-sm text-green-600';
 const footerClass = 'flex flex-col space-y-2';
 const buttonClass = 'w-full';
 
@@ -74,16 +75,13 @@ export default function VerifyEmailPage() {
                     .catch(() => setResendStatus('error'))
                     .finally(() => setResendLoading(false));
                 }}
-                disabled={resendLoading}
-              >
-                {resendLoading ? t('auth.loading') : t('onboarding.resendEmail')}
+                disabled={resendLoading}>
+                {resendLoading ? t('onboarding.loading') : t('onboarding.resendEmail')}
               </Button>
               {resendStatus === 'success' && (
-                <p className={messageClass}>{t('onboarding.resendEmailSuccess')}</p>
+                <p className={successMessageClass}>{t('onboarding.resendEmailSuccess')}</p>
               )}
-              {resendStatus === 'error' && (
-                <p className={errorMessageClass}>{t('onboarding.resendEmailError')}</p>
-              )}
+              {resendStatus === 'error' && <p className={errorMessageClass}>{t('onboarding.resendEmailError')}</p>}
             </div>
           </CardContent>
           <CardFooter className={footerClass}>

@@ -156,6 +156,7 @@ export default {
     role: "Role",
     languageThai: "Thai",
     languageEnglish: "English",
+    loading: "Loading...",
     roles: {
       doctor: "Doctor",
       staff: "Staff",
