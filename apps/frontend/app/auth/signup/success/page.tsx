@@ -2,7 +2,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useTranslation } from '@/lib/i18n';
-import { Check, CheckCircle, Info } from 'lucide-react';
+import { CheckCircle, CircleCheckBig, Info } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -70,15 +70,15 @@ export default function SignupSuccessPage() {
               <h3 className={stepHeadingClass}>{t('onboarding.nextSteps')}</h3>
               <ul className={stepListClass}>
                 <li className={stepItemClass}>
-                  <Check className={stepIconClass} />
+                  <CircleCheckBig className={stepIconClass} />
                   {t('onboarding.verifyEmailAddress')}
                 </li>
                 <li className={stepItemClass}>
-                  <Check className={stepIconClass} />
+                  <CircleCheckBig className={stepIconClass} />
                   {t('onboarding.completeClinicSetup')}
                 </li>
                 <li className={stepItemClass}>
-                  <Check className={stepIconClass} />
+                  <CircleCheckBig className={stepIconClass} />
                   {t('onboarding.startAddingPatients')}
                 </li>
               </ul>
@@ -93,7 +93,9 @@ export default function SignupSuccessPage() {
           </CardContent>
           <CardFooter>
             <Button asChild className={buttonClass}>
-              <Link href={`/auth/verify-email?email=${encodeURIComponent(email)}`}>{t('onboarding.proceedToVerification')}</Link>
+              <Link href={`/auth/verify-email?email=${encodeURIComponent(email)}`}>
+                {t('onboarding.proceedToVerification')}
+              </Link>
             </Button>
           </CardFooter>
         </Card>

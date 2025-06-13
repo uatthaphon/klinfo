@@ -17,7 +17,7 @@ const iconWrapperClass = 'rounded-full bg-primary/20 p-3';
 const iconClass = 'h-6 w-6 text-primary';
 const messageClass = 'text-center text-sm text-muted-foreground';
 const resendWrapperClass = 'text-center text-sm text-muted-foreground';
-const resendLinkClass = 'text-primary underline-offset-4 hover:underline';
+const resendLinkClass = 'text-primary underline-offset-4 hover:underline px-2';
 const errorMessageClass = 'text-center text-sm text-destructive';
 const successMessageClass = 'text-center text-sm text-green-600';
 const footerClass = 'flex flex-col space-y-2';
@@ -62,6 +62,10 @@ export default function VerifyEmailPage() {
             </div>
             {status === 'error' && <p className={messageClass}>{t('onboarding.verifyEmail')}</p>}
             <div className={resendWrapperClass}>
+              <>
+                {t('onboarding.verificationEmailSent', { email })} <br />
+                {t('onboarding.verificationEmailNotReceived')}
+              </>
               <Button
                 type="button"
                 variant="link"

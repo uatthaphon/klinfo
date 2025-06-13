@@ -167,5 +167,7 @@ export default {
       kualaLumpur: "Asia/Kuala_Lumpur",
       jakarta: "Asia/Jakarta",
     },
+    verificationEmailSent: "We've sent a verification email to {{email}}.",
+    verificationEmailNotReceived: "Didn't receive an email?",
   },
 } as const;

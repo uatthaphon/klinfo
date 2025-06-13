@@ -165,5 +165,7 @@ export default {
       kualaLumpur: 'เอเชีย/กัวลาลัมเปอร์',
       jakarta: 'เอเชีย/จาการ์ตา',
     },
+    verificationEmailSent: 'เราได้ส่งอีเมลยืนยันไปที่ {{email}} แล้ว',
+    verificationEmailNotReceived: 'ยังไม่ได้รับอีเมลใช่ไหม?',
   },
 } as const;
