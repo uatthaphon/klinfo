@@ -149,11 +149,17 @@ export default {
     state: "จังหวัด",
     zip: "รหัสไปรษณีย์",
     role: "บทบาท",
+    languageThai: "ไทย",
+    languageEnglish: "อังกฤษ",
     roles: {
       doctor: "แพทย์",
-      nurse: "พยาบาล",
-      receptionist: "พนักงานต้อนรับ",
-      admin: "ผู้ดูแลระบบ",
+      staff: "พนักงาน",
+    },
+    timezones: {
+      bangkok: "เอเชีย/กรุงเทพฯ",
+      singapore: "เอเชีย/สิงคโปร์",
+      kualaLumpur: "เอเชีย/กัวลาลัมเปอร์",
+      jakarta: "เอเชีย/จาการ์ตา",
     },
   },
 } as const;

@@ -1,8 +1,5 @@
 'use client';
 
-import { TFunction } from 'i18next';
-('use client');
-
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';

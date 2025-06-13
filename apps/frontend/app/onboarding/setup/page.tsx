@@ -10,6 +10,7 @@ import { useTranslation } from '@/lib/i18n';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { Plus } from 'lucide-react';
 
 const containerClass = 'bg-muted flex min-h-screen flex-col items-center justify-center p-4 md:p-8';
 const mainClass = 'w-full max-w-3xl';
@@ -71,10 +72,10 @@ export default function SetupPage() {
                         <SelectValue placeholder={t('onboarding.timezone')} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="asia_bangkok">UTC+7 Asia/Bangkok</SelectItem>
-                        <SelectItem value="asia_singapore">UTC+8 Asia/Singapore</SelectItem>
-                        <SelectItem value="asia_kuala_lumpur">UTC+8 Asia/Kuala_Lumpur</SelectItem>
-                        <SelectItem value="asia_jakarta">UTC+7 Asia/Jakarta</SelectItem>
+                        <SelectItem value="asia_bangkok">{t('onboarding.timezones.bangkok')} (UTC+7)</SelectItem>
+                        <SelectItem value="asia_singapore">{t('onboarding.timezones.singapore')} (UTC+8)</SelectItem>
+                        <SelectItem value="asia_kuala_lumpur">{t('onboarding.timezones.kualaLumpur')} (UTC+8)</SelectItem>
+                        <SelectItem value="asia_jakarta">{t('onboarding.timezones.jakarta')} (UTC+7)</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -85,8 +86,8 @@ export default function SetupPage() {
                         <SelectValue placeholder={t('onboarding.language')} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="th">🇹🇭 ไทย</SelectItem>
-                        <SelectItem value="en">🇺🇸 English</SelectItem>
+                        <SelectItem value="th">🇹🇭 {t('onboarding.languageThai')}</SelectItem>
+                        <SelectItem value="en">🇺🇸 {t('onboarding.languageEnglish')}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -138,29 +139,14 @@ export default function SetupPage() {
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="doctor">{t('onboarding.roles.doctor')}</SelectItem>
-                            <SelectItem value="nurse">{t('onboarding.roles.nurse')}</SelectItem>
-                            <SelectItem value="receptionist">{t('onboarding.roles.receptionist')}</SelectItem>
-                            <SelectItem value="admin">{t('onboarding.roles.admin')}</SelectItem>
+                            <SelectItem value="staff">{t('onboarding.roles.staff')}</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
                     </div>
                   ))}
                   <Button variant="outline" className="w-full">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="mr-2 h-4 w-4">
-                      <path d="M5 12h14" />
-                      <path d="M12 5v14" />
-                    </svg>
+                    <Plus className="mr-2 h-4 w-4" />
                     {t('onboarding.addAnotherTeamMember')}
                   </Button>
                 </div>
@@ -184,20 +170,7 @@ export default function SetupPage() {
                     </div>
                   ))}
                   <Button variant="outline" className="w-full">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="mr-2 h-4 w-4">
-                      <path d="M5 12h14" />
-                      <path d="M12 5v14" />
-                    </svg>
+                    <Plus className="mr-2 h-4 w-4" />
                     {t('onboarding.addAnotherService')}
                   </Button>
                 </div>

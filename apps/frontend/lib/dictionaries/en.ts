@@ -149,11 +149,17 @@ export default {
     state: "State",
     zip: "ZIP Code",
     role: "Role",
+    languageThai: "Thai",
+    languageEnglish: "English",
     roles: {
       doctor: "Doctor",
-      nurse: "Nurse",
-      receptionist: "Receptionist",
-      admin: "Administrator",
+      staff: "Staff",
+    },
+    timezones: {
+      bangkok: "Asia/Bangkok",
+      singapore: "Asia/Singapore",
+      kualaLumpur: "Asia/Kuala_Lumpur",
+      jakarta: "Asia/Jakarta",
     },
   },
 } as const;
