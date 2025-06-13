@@ -7,10 +7,14 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useTranslation } from '@/lib/i18n';
+import { setupClinic } from '@/lib/api/onboarding';
 import { Plus, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { useForm, useFieldArray } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
 
 const containerClass = 'bg-muted flex min-h-screen flex-col items-center justify-center p-4 md:p-8';
 const mainClass = 'w-full max-w-3xl';
@@ -37,21 +41,73 @@ const serviceInputClass = 'md:col-span-2';
 const footerButtonsClass = 'flex space-x-2';
 const timezoneTextClass = 'text-muted-foreground indent-2';
 
+const serviceSchema = z.object({
+  name: z.string().min(1),
+  price: z.preprocess((v) => parseFloat(String(v || 0)), z.number()),
+});
+
+const schema = z.object({
+  name: z.string().min(1),
+  language: z.string().optional(),
+  phone: z.string().optional(),
+  city: z.string().optional(),
+  state: z.string().optional(),
+  zip: z.string().optional(),
+  email: z.string().optional(),
+  website: z.string().optional(),
+  googleMap: z.string().optional(),
+  services: z.array(serviceSchema),
+});
+
 export default function SetupPage() {
   const { t } = useTranslation();
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState('clinic');
-  const [teamMembers, setTeamMembers] = useState([{ id: 1 }]);
-  const [servicesList, setServicesList] = useState([{ id: 1 }]);
+  const {
+    register,
+    control,
+    handleSubmit,
+    watch,
+    setValue,
+  } = useForm({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      language: 'th',
+      services: [{ name: '', price: 0 }],
+    },
+  });
+  const { fields, append, remove } = useFieldArray({ control, name: 'services' });
 
-  const handleNext = () => {
+  const handleNext = async (data: any) => {
     if (currentStep === 'clinic') {
       setCurrentStep('team');
-    } else if (currentStep === 'team') {
-      setCurrentStep('services');
-    } else {
-      router.push('/dashboard');
+      return;
     }
+    if (currentStep === 'team') {
+      setCurrentStep('services');
+      return;
+    }
+
+    await setupClinic({
+      clinicInfo: {
+        name: data.name,
+        language: data.language,
+        timezone: 'Asia/Bangkok',
+        phone: data.phone,
+        city: data.city,
+        state: data.state,
+        zip: data.zip,
+        email: data.email,
+        website: data.website,
+        googleMap: data.googleMap,
+      },
+      // owner will be assigned automatically on the backend
+      services: data.services.map((s: any) => ({
+        name: s.name,
+        price: s.price,
+      })),
+    });
+    router.push('/dashboard');
   };
 
   const handlePrev = () => {
@@ -80,12 +136,12 @@ export default function SetupPage() {
               <TabsContent value="clinic" className={tabsContentClass}>
                 <div className={spaceY2Class}>
                   <Label htmlFor="clinicName">{t('onboarding.clinicName')}</Label>
-                  <Input id="clinicName" defaultValue="" />
+                  <Input id="clinicName" {...register('name')} />
                 </div>
                 <div className={gridTwoClass}>
                   <div className={spaceY2Class}>
                     <Label htmlFor="language">{t('onboarding.language')}</Label>
-                    <Select defaultValue="th">
+                    <Select value={watch('language')} onValueChange={(v) => setValue('language', v)}>
                       <SelectTrigger>
                         <SelectValue placeholder={t('onboarding.language')} />
                       </SelectTrigger>
@@ -102,74 +158,47 @@ export default function SetupPage() {
                   </div>
                 </div>
                 <div className={spaceY2Class}>
-                  <Label htmlFor="address">{t('onboarding.address')}</Label>
-                  <Input id="address" placeholder="" />
-                </div>
-                <div className={spaceY2Class}>
                   <Label htmlFor="phone">{t('onboarding.phone')}</Label>
-                  <Input id="phone" placeholder="" />
+                  <Input id="phone" {...register('phone')} placeholder="" />
                 </div>
                 <div className={gridThreeClass}>
                   <div className={spaceY2Class}>
                     <Label htmlFor="city">{t('onboarding.city')}</Label>
-                    <Input id="city" placeholder="" />
+                    <Input id="city" {...register('city')} placeholder="" />
                   </div>
                   <div className={spaceY2Class}>
                     <Label htmlFor="state">{t('onboarding.state')}</Label>
-                    <Input id="state" placeholder="" />
+                    <Input id="state" {...register('state')} placeholder="" />
                   </div>
                   <div className={spaceY2Class}>
                     <Label htmlFor="zip">{t('onboarding.zip')}</Label>
-                    <Input id="zip" placeholder="" />
+                    <Input id="zip" {...register('zip')} placeholder="" />
                   </div>
+                </div>
+                <div className={spaceY2Class}>
+                  <Label htmlFor="email">Email</Label>
+                  <Input id="email" type="email" {...register('email')} />
+                </div>
+                <div className={spaceY2Class}>
+                  <Label htmlFor="website">Website</Label>
+                  <Input id="website" {...register('website')} />
+                </div>
+                <div className={spaceY2Class}>
+                  <Label htmlFor="googleMap">Google Map Link</Label>
+                  <Input id="googleMap" {...register('googleMap')} />
                 </div>
               </TabsContent>
               <TabsContent value="team" className={tabsContentClass}>
                 <div className={spaceY2Class}>
                   <Label>{t('onboarding.inviteTeamMembers')}</Label>
-                  <p className={inviteDescClass}>{t('onboarding.inviteTeamDescription')}</p>
+                  <p className={inviteDescClass}>
+                    {t('onboarding.inviteTeamDescription')}{' '}
+                    <Link href="/pricing" target="_blank" className="underline">
+                      Pricing
+                    </Link>
+                  </p>
                 </div>
-                <div className={gridHeadClass}>
-                  <span>{t('auth.name')}</span>
-                  <span>{t('auth.email')}</span>
-                  <span>{t('onboarding.role')}</span>
-                </div>
-                <div className={spaceY4Class}>
-                  {teamMembers.map((member, index) => (
-                    <div key={member.id} className={gridRowClass}>
-                      <Input id={`name-${index}`} placeholder={t('auth.name')} />
-                      <Input id={`email-${index}`} type="email" placeholder="email@example.com" />
-                      <div className={flexRowClass}>
-                        <Select>
-                          <SelectTrigger>
-                            <SelectValue placeholder={t('onboarding.role')} />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="doctor">{t('onboarding.roles.doctor')}</SelectItem>
-                            <SelectItem value="staff">{t('onboarding.roles.staff')}</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <Button
-                          type="button"
-                          size="icon"
-                          variant="ghost"
-                          onClick={() =>
-                            setTeamMembers((prev) => (prev.length > 1 ? prev.filter((_, i) => i !== index) : prev))
-                          }>
-                          <Trash2 className={iconSmallClass} />
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                  <Button
-                    variant="outline"
-                    className={addButtonClass}
-                    type="button"
-                    onClick={() => setTeamMembers((prev) => [...prev, { id: Date.now() }])}>
-                    <Plus className={plusIconClass} />
-                    {t('onboarding.addAnotherTeamMember')}
-                  </Button>
-                </div>
+                <p className={inviteDescClass}>{t('onboarding.singleMemberNotice')}</p>
               </TabsContent>
               <TabsContent value="services" className={tabsContentClass}>
                 <div className={spaceY2Class}>
@@ -177,27 +206,33 @@ export default function SetupPage() {
                   <p className={inviteDescClass}>{t('onboarding.servicesDescription')}</p>
                 </div>
                 <div className={gridHeadClass}>
-                  <span>{t('onboarding.services')}</span>
-                  <span className={priceHeadClass}>{t('onboarding.price')}</span>
+                  <Label htmlFor="service-0">{t('onboarding.services')}</Label>
+                  <Label htmlFor="price-0" className={priceHeadClass}>
+                    {t('onboarding.price')}
+                  </Label>
                 </div>
                 <div className={spaceY4Class}>
-                  {servicesList.map((service, index) => (
-                    <div key={service.id} className={gridRowClass}>
+                  {fields.map((field, index) => (
+                    <div key={field.id} className={gridRowClass}>
                       <Input
                         id={`service-${index}`}
                         placeholder="e.g., Annual Check-up"
                         className={serviceInputClass}
+                        {...register(`services.${index}.name` as const)}
                       />
                       <div className={flexRowClass}>
-                        <Input id={`price-${index}`} type="number" placeholder="0.00" />
-                        <span>฿</span>
+                        <Input
+                          id={`price-${index}`}
+                          type="number"
+                          placeholder="0.00"
+                          {...register(`services.${index}.price` as const, { valueAsNumber: true })}
+                        />
                         <Button
                           type="button"
                           size="icon"
                           variant="ghost"
-                          onClick={() =>
-                            setServicesList((prev) => (prev.length > 1 ? prev.filter((_, i) => i !== index) : prev))
-                          }>
+                          onClick={() => remove(index)}
+                        >
                           <Trash2 className={iconSmallClass} />
                         </Button>
                       </div>
@@ -207,7 +242,8 @@ export default function SetupPage() {
                     variant="outline"
                     className={addButtonClass}
                     type="button"
-                    onClick={() => setServicesList((prev) => [...prev, { id: Date.now() }])}>
+                    onClick={() => append({ name: '', price: 0 })}
+                  >
                     <Plus className={plusIconClass} />
                     {t('onboarding.addAnotherService')}
                   </Button>
@@ -223,7 +259,7 @@ export default function SetupPage() {
               <Button variant="outline" onClick={handlePrev} disabled={currentStep === 'clinic'}>
                 {t('onboarding.previousStep')}
               </Button>
-              <Button onClick={handleNext}>
+              <Button onClick={handleSubmit(handleNext)}>
                 {currentStep === 'services' ? t('onboarding.finishSetup') : t('onboarding.nextStep')}
               </Button>
             </div>

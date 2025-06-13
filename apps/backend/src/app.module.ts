@@ -7,6 +7,9 @@ import { AppService } from './app.service';
 import { AuditModule } from './audit/audit.module';
 import { AuthModule } from './auth/auth.module';
 import { ClinicsModule } from './clinics/clinics.module';
+import { ClinicMembersModule } from './clinic-members/clinic-members.module';
+import { ServiceModule } from './services/service.module';
+import { OnboardingModule } from './onboarding/onboarding.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -44,6 +47,9 @@ import { UsersModule } from './users/users.module';
     AuditModule,
     UsersModule,
     ClinicsModule,
+    ClinicMembersModule,
+    ServiceModule,
+    OnboardingModule,
     AuthModule,
   ],
   controllers: [AppController],
