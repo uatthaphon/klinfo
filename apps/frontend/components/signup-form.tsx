@@ -4,6 +4,9 @@ import { signup } from '@/lib/api/auth';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -36,60 +39,53 @@ export function SignUpForm({ className, ...props }: React.ComponentProps<'div'>)
   const { t } = useTranslation();
 
   const router = useRouter();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [validationErrors, setValidationErrors] = useState<{ [key: string]: string }>({});
+  const [serverError, setServerError] = useState('');
 
-  const validate = () => {
-    const errors: { [key: string]: string } = {};
-    if (!name.trim()) {
-      errors.name = `${t('auth.requiredField')} (${t('auth.name')})`;
-    }
-    if (!email.trim()) {
-      errors.email = `${t('auth.requiredField')} (${t('auth.email')})`;
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      errors.email = t('auth.invalidEmail');
-    }
-    if (!password) {
-      errors.password = `${t('auth.requiredField')} (${t('auth.password')})`;
-    } else if (password.length < 6) {
-      errors.password = t('auth.passwordTooShort');
-    }
-    if (!confirmPassword) {
-      errors.confirmPassword = `${t('auth.requiredField')} (${t('auth.confirmPassword')})`;
-    } else if (password !== confirmPassword) {
-      errors.confirmPassword = t('auth.passwordsDoNotMatch') || 'Passwords do not match.';
-    }
-    return errors;
-  };
+  const schema = z
+    .object({
+      name: z.string().min(1, `${t('auth.requiredField')} (${t('auth.name')})`),
+      email: z
+        .string()
+        .min(1, `${t('auth.requiredField')} (${t('auth.email')})`)
+        .email(t('auth.invalidEmail')),
+      password: z.string().min(6, t('auth.passwordTooShort')),
+      confirmPassword: z
+        .string()
+        .min(1, `${t('auth.requiredField')} (${t('auth.confirmPassword')})`),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      path: ['confirmPassword'],
+      message: t('auth.passwordsDoNotMatch'),
+    });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    const errors = validate();
-    if (Object.keys(errors).length > 0) {
-      setValidationErrors(errors);
-      return;
-    }
-    setValidationErrors({});
-    setLoading(true);
+  type FormValues = z.infer<typeof schema>;
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    setError: setFormError,
+  } = useForm<FormValues>({
+    resolver: zodResolver(schema),
+  });
+
+  const onSubmit = async (values: FormValues) => {
+    setServerError('');
     try {
-      await signup({ name, email, password });
+      await signup({
+        name: values.name,
+        email: values.email,
+        password: values.password,
+      });
       router.push('/auth/login');
     } catch (err: any) {
       const code = err.code || 'unknown';
       const mapped = mapSignupErrorCode(code, t);
       if (mapped?.field) {
-        setValidationErrors((prev) => ({ ...prev, [mapped.field!]: mapped.message }));
+        setFormError(mapped.field as keyof FormValues, { type: 'server', message: mapped.message });
       } else {
-        setError(t(`auth.errorCodes.${code}`) || t('auth.errorCodes.unknown'));
+        setServerError(t(`auth.errorCodes.${code}`) || t('auth.errorCodes.unknown'));
       }
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -97,7 +93,7 @@ export function SignUpForm({ className, ...props }: React.ComponentProps<'div'>)
     <div className={cn(formRootClass, className)} {...props}>
       <Card className={cardClass}>
         <CardContent className={cardContentClass}>
-          <form className={formClass} onSubmit={handleSubmit} noValidate>
+          <form className={formClass} onSubmit={handleSubmit(onSubmit)} noValidate>
             <div className={formGroupClass}>
               <div className={headingGroupClass}>
                 <h1 className={headingTextClass}>{t('auth.createAccount')}</h1>
@@ -109,16 +105,13 @@ export function SignUpForm({ className, ...props }: React.ComponentProps<'div'>)
                   id="name"
                   type="text"
                   placeholder={t('auth.namePlaceholder')}
-                  required
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  aria-invalid={!!validationErrors.name}
-                  aria-describedby={validationErrors.name ? 'name-error' : undefined}
-                  disabled={loading}
+                  aria-invalid={!!errors.name}
+                  {...register('name')}
+                  disabled={isSubmitting}
                 />
-                {validationErrors.name && (
+                {errors.name && (
                   <p id="name-error" className="text-destructive text-sm -mt-1">
-                    {validationErrors.name}
+                    {errors.name.message}
                   </p>
                 )}
               </div>
@@ -128,16 +121,13 @@ export function SignUpForm({ className, ...props }: React.ComponentProps<'div'>)
                   id="email"
                   type="email"
                   placeholder={t('auth.emailPlaceholder')}
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  aria-invalid={!!validationErrors.email}
-                  aria-describedby={validationErrors.email ? 'email-error' : undefined}
-                  disabled={loading}
+                  aria-invalid={!!errors.email}
+                  {...register('email')}
+                  disabled={isSubmitting}
                 />
-                {validationErrors.email && (
+                {errors.email && (
                   <p id="email-error" className="text-destructive text-sm -mt-1">
-                    {validationErrors.email}
+                    {errors.email.message}
                   </p>
                 )}
               </div>
@@ -147,16 +137,14 @@ export function SignUpForm({ className, ...props }: React.ComponentProps<'div'>)
                 </div>
                 <PasswordInput
                   id="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  isInvalid={!!validationErrors.password}
-                  aria-describedby={validationErrors.password ? 'password-error' : undefined}
-                  disabled={loading}
+                  isInvalid={!!errors.password}
+                  aria-describedby={errors.password ? 'password-error' : undefined}
+                  {...register('password')}
+                  disabled={isSubmitting}
                 />
-                {validationErrors.password && (
+                {errors.password && (
                   <p id="password-error" className="text-destructive text-sm -mt-1">
-                    {validationErrors.password}
+                    {errors.password.message}
                   </p>
                 )}
               </div>
@@ -166,23 +154,23 @@ export function SignUpForm({ className, ...props }: React.ComponentProps<'div'>)
                 </div>
                 <PasswordInput
                   id="confirmPassword"
-                  required
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  isInvalid={!!validationErrors.confirmPassword}
-                  aria-describedby={validationErrors.confirmPassword ? 'confirmPassword-error' : undefined}
-                  disabled={loading}
+                  isInvalid={!!errors.confirmPassword}
+                  aria-describedby={errors.confirmPassword ? 'confirmPassword-error' : undefined}
+                  {...register('confirmPassword')}
+                  disabled={isSubmitting}
                 />
-                {validationErrors.confirmPassword && (
+                {errors.confirmPassword && (
                   <p id="confirmPassword-error" className="text-destructive text-sm -mt-1">
-                    {validationErrors.confirmPassword}
+                    {errors.confirmPassword.message}
                   </p>
                 )}
               </div>
-              <Button type="submit" className={submitButtonClass} disabled={loading}>
-                {loading ? t('auth.loading') : t('auth.signup')}
+              <Button type="submit" className={submitButtonClass} disabled={isSubmitting}>
+                {isSubmitting ? t('auth.loading') : t('auth.signup')}
               </Button>
-              {error && <p className="text-destructive text-sm text-center">{error}</p>}
+              {serverError && (
+                <p className="text-destructive text-sm text-center">{serverError}</p>
+              )}
               <div className={loginLinkWrapperClass}>
                 {t('auth.haveAccount')}{' '}
                 <Link href="/auth/login" className={loginLinkClass}>

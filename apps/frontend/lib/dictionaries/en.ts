@@ -88,6 +88,11 @@ export default {
       INVALID_CREDENTIALS: 'Incorrect email or password.',
       USER_NOT_FOUND: 'User not found.',
       WEAK_PASSWORD: 'Password is too weak.',
+      AUTH_EMAIL_ALREADY_REGISTERED: 'This email is already registered.',
+      AUTH_INVALID_CREDENTIALS: 'Incorrect email or password.',
+      AUTH_USER_NOT_FOUND: 'User not found.',
+      AUTH_WEAK_PASSWORD: 'Password is too weak.',
+      AUTH_INVALID_TOKEN: 'Invalid token.',
     },
   },
   user: {
