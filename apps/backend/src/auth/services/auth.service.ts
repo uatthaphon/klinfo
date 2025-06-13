@@ -9,9 +9,11 @@ import { ResponseMeta } from 'src/common/constants/response-codes';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 import { LoginDto } from '../dto/login.dto';
+import { RequestPasswordDto } from '../dto/request-password.dto';
 import { ResetPasswordDto } from '../dto/reset-password.dto';
 import { SignupDto } from '../dto/signup.dto';
 import { comparePasswords, hashPassword } from '../utils/password.util';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class AuthService {
@@ -19,6 +21,7 @@ export class AuthService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
+    private readonly mailService: MailService,
   ) {}
 
   async signup(dto: SignupDto): Promise<any> {
@@ -67,10 +70,26 @@ export class AuthService {
     };
   }
 
+  async requestPasswordReset(dto: RequestPasswordDto): Promise<any> {
+    const user = await this.userRepository.findOne({ where: { email: dto.email } });
+    if (!user) {
+      throw new UnauthorizedException({
+        success: false,
+        ...ResponseMeta.Auth.InvalidResetToken,
+        data: null,
+      });
+    }
+    const token = await this.jwtService.signAsync({ sub: user.id, purpose: 'reset' }, { expiresIn: '1h' });
+    await this.mailService.sendPasswordReset(user.email, token);
+    return {
+      success: true,
+      ...ResponseMeta.Auth.ResetEmailSent,
+      data: null,
+    };
+  }
+
   async resetPassword(dto: ResetPasswordDto): Promise<any> {
-    const user = await this.userRepository.findOne({
-      where: { email: dto.email },
-    });
+    const user = await this.userRepository.findOne({ where: { email: dto.email } });
     if (!user) {
       throw new UnauthorizedException({
         success: false,
@@ -79,7 +98,19 @@ export class AuthService {
       });
     }
 
-    // Here you'd validate the token, omitted for now
+    try {
+      const payload = await this.jwtService.verifyAsync<{ sub: string; purpose: string }>(dto.token);
+      if (payload.sub !== user.id || payload.purpose !== 'reset') {
+        throw new Error('invalid');
+      }
+    } catch (e) {
+      throw new UnauthorizedException({
+        success: false,
+        ...ResponseMeta.Auth.InvalidResetToken,
+        data: null,
+      });
+    }
+
     user.password = await hashPassword(dto.newPassword);
     await this.userRepository.save(user);
     return {

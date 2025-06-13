@@ -93,6 +93,7 @@ export default {
       AUTH_USER_NOT_FOUND: 'User not found.',
       AUTH_WEAK_PASSWORD: 'Password is too weak.',
       AUTH_INVALID_TOKEN: 'Invalid token.',
+      AUTH_RESET_EMAIL_SENT: 'Password reset email sent.',
     },
   },
   user: {

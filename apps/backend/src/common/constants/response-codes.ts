@@ -26,6 +26,11 @@ export const ResponseMeta = {
       message: 'Password has been reset',
       statusCode: HttpStatus.OK,
     },
+    ResetEmailSent: {
+      code: 'AUTH_RESET_EMAIL_SENT',
+      message: 'Password reset email sent',
+      statusCode: HttpStatus.OK,
+    },
     InvalidResetToken: {
       code: 'AUTH_INVALID_TOKEN',
       message: 'Invalid email or token',

@@ -93,6 +93,7 @@ export default {
       AUTH_USER_NOT_FOUND: 'ไม่พบบัญชีผู้ใช้',
       AUTH_WEAK_PASSWORD: 'รหัสผ่านไม่ปลอดภัยเพียงพอ',
       AUTH_INVALID_TOKEN: 'โทเคนไม่ถูกต้อง',
+      AUTH_RESET_EMAIL_SENT: 'ส่งอีเมลรีเซ็ตรหัสผ่านแล้ว',
     },
   },
   user: {
