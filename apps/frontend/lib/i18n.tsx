@@ -1,6 +1,10 @@
 'use client';
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
-import { dictionaries, type TranslationDict } from './dictionaries';
+import { dictionaries } from './dictionaries';
+
+type TranslationDict = {
+  [key: string]: string | TranslationDict;
+};
 
 export type Language = keyof typeof dictionaries;
 

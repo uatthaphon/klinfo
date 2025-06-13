@@ -3,7 +3,8 @@
   "private": true,
   "scripts": {
     "version": "1.0.0",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "setup": "pnpm install && pnpm --filter backend run build && pnpm --filter frontend run build"
   },
   "keywords": [],
   "author": "",
