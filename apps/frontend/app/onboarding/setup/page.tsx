@@ -10,21 +10,37 @@ import { useTranslation } from '@/lib/i18n';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { Plus } from 'lucide-react';
+import { Plus, Trash2 } from 'lucide-react';
 
 const containerClass = 'bg-muted flex min-h-screen flex-col items-center justify-center p-4 md:p-8';
 const mainClass = 'w-full max-w-3xl';
 const cardClass = 'w-full';
+const tabsClass = 'w-full';
 const tabsListClass = 'grid w-full grid-cols-3';
 const tabsContentClass = 'space-y-4 pt-4';
 const gridTwoClass = 'grid grid-cols-1 gap-4 md:grid-cols-2';
 const gridThreeClass = 'grid grid-cols-1 gap-4 md:grid-cols-3';
 const footerClass = 'flex justify-between';
+const titleClass = 'text-2xl';
+const spaceY2Class = 'space-y-2';
+const spaceY4Class = 'space-y-4';
+const inviteDescClass = 'text-sm text-gray-500';
+const gridHeadClass = 'grid grid-cols-1 gap-4 md:grid-cols-3 font-medium';
+const gridRowClass = 'grid grid-cols-1 gap-4 md:grid-cols-3 items-end';
+const flexRowClass = 'flex items-center gap-2';
+const iconSmallClass = 'h-4 w-4';
+const addButtonClass = 'w-full';
+const plusIconClass = 'mr-2 h-4 w-4';
+const priceHeadClass = 'md:col-span-2 text-right md:text-left';
+const serviceInputClass = 'md:col-span-2';
+const footerButtonsClass = 'flex space-x-2';
 
 export default function SetupPage() {
   const { t } = useTranslation();
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState('clinic');
+  const [teamMembers, setTeamMembers] = useState([{ id: 1 }]);
+  const [servicesList, setServicesList] = useState([{ id: 1 }]);
 
   const handleNext = () => {
     if (currentStep === 'clinic') {
@@ -49,37 +65,23 @@ export default function SetupPage() {
       <div className={mainClass}>
         <Card className={cardClass}>
           <CardHeader>
-            <CardTitle className="text-2xl">{t('onboarding.firstTimeSetup')}</CardTitle>
+            <CardTitle className={titleClass}>{t('onboarding.firstTimeSetup')}</CardTitle>
             <CardDescription>{t('onboarding.setupDescription')}</CardDescription>
           </CardHeader>
           <CardContent>
-            <Tabs value={currentStep} className="w-full">
+            <Tabs value={currentStep} className={tabsClass}>
               <TabsList className={tabsListClass}>
                 <TabsTrigger value="clinic">{t('onboarding.clinicDetails')}</TabsTrigger>
                 <TabsTrigger value="team">{t('onboarding.teamMembers')}</TabsTrigger>
                 <TabsTrigger value="services">{t('onboarding.services')}</TabsTrigger>
               </TabsList>
               <TabsContent value="clinic" className={tabsContentClass}>
-                <div className="space-y-2">
+                <div className={spaceY2Class}>
                   <Label htmlFor="clinicName">{t('onboarding.clinicName')}</Label>
                   <Input id="clinicName" defaultValue="" />
                 </div>
                 <div className={gridTwoClass}>
-                  <div className="space-y-2">
-                    <Label htmlFor="timezone">{t('onboarding.timezone')}</Label>
-                    <Select defaultValue="asia_bangkok">
-                      <SelectTrigger>
-                        <SelectValue placeholder={t('onboarding.timezone')} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="asia_bangkok">{t('onboarding.timezones.bangkok')} (UTC+7)</SelectItem>
-                        <SelectItem value="asia_singapore">{t('onboarding.timezones.singapore')} (UTC+8)</SelectItem>
-                        <SelectItem value="asia_kuala_lumpur">{t('onboarding.timezones.kualaLumpur')} (UTC+8)</SelectItem>
-                        <SelectItem value="asia_jakarta">{t('onboarding.timezones.jakarta')} (UTC+7)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
+                  <div className={spaceY2Class}>
                     <Label htmlFor="language">{t('onboarding.language')}</Label>
                     <Select defaultValue="th">
                       <SelectTrigger>
@@ -91,48 +93,50 @@ export default function SetupPage() {
                       </SelectContent>
                     </Select>
                   </div>
+                  <div className={spaceY2Class}>
+                    <input type="hidden" id="timezone" value="Asia/Bangkok" />
+                    <Label htmlFor="timezone">{t('onboarding.timezone')} (UTC+7)</Label>
+                  </div>
                 </div>
-                <div className="space-y-2">
+                <div className={spaceY2Class}>
                   <Label htmlFor="address">{t('onboarding.address')}</Label>
                   <Input id="address" placeholder="" />
                 </div>
-                <div className="space-y-2">
+                <div className={spaceY2Class}>
                   <Label htmlFor="phone">{t('onboarding.phone')}</Label>
                   <Input id="phone" placeholder="" />
                 </div>
                 <div className={gridThreeClass}>
-                  <div className="space-y-2">
+                  <div className={spaceY2Class}>
                     <Label htmlFor="city">{t('onboarding.city')}</Label>
                     <Input id="city" placeholder="" />
                   </div>
-                  <div className="space-y-2">
+                  <div className={spaceY2Class}>
                     <Label htmlFor="state">{t('onboarding.state')}</Label>
                     <Input id="state" placeholder="" />
                   </div>
-                  <div className="space-y-2">
+                  <div className={spaceY2Class}>
                     <Label htmlFor="zip">{t('onboarding.zip')}</Label>
                     <Input id="zip" placeholder="" />
                   </div>
                 </div>
               </TabsContent>
               <TabsContent value="team" className={tabsContentClass}>
-                <div className="space-y-2">
+                <div className={spaceY2Class}>
                   <Label>{t('onboarding.inviteTeamMembers')}</Label>
-                  <p className="text-sm text-gray-500">{t('onboarding.inviteTeamDescription')}</p>
+                  <p className={inviteDescClass}>{t('onboarding.inviteTeamDescription')}</p>
                 </div>
-                <div className="space-y-4">
-                  {[1, 2].map((index) => (
-                    <div key={index} className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                      <div className="space-y-2">
-                        <Label htmlFor={`name-${index}`}>{t('auth.name')}</Label>
-                        <Input id={`name-${index}`} placeholder={t('auth.name')} />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor={`email-${index}`}>{t('auth.email')}</Label>
-                        <Input id={`email-${index}`} type="email" placeholder="email@example.com" />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor={`role-${index}`}>{t('onboarding.role')}</Label>
+                <div className={gridHeadClass}>
+                  <span>{t('auth.name')}</span>
+                  <span>{t('auth.email')}</span>
+                  <span>{t('onboarding.role')}</span>
+                </div>
+                <div className={spaceY4Class}>
+                  {teamMembers.map((member, index) => (
+                    <div key={member.id} className={gridRowClass}>
+                      <Input id={`name-${index}`} placeholder={t('auth.name')} />
+                      <Input id={`email-${index}`} type="email" placeholder="email@example.com" />
+                      <div className={flexRowClass}>
                         <Select>
                           <SelectTrigger>
                             <SelectValue placeholder={t('onboarding.role')} />
@@ -142,35 +146,74 @@ export default function SetupPage() {
                             <SelectItem value="staff">{t('onboarding.roles.staff')}</SelectItem>
                           </SelectContent>
                         </Select>
+                        <Button
+                          type="button"
+                          size="icon"
+                          variant="ghost"
+                          onClick={() =>
+                            setTeamMembers((prev) =>
+                              prev.length > 1 ? prev.filter((_, i) => i !== index) : prev,
+                            )
+                          }
+                        >
+                          <Trash2 className={iconSmallClass} />
+                        </Button>
                       </div>
                     </div>
                   ))}
-                  <Button variant="outline" className="w-full">
-                    <Plus className="mr-2 h-4 w-4" />
+                  <Button
+                    variant="outline"
+                    className={addButtonClass}
+                    type="button"
+                    onClick={() =>
+                      setTeamMembers((prev) => [...prev, { id: Date.now() }])
+                    }
+                  >
+                    <Plus className={plusIconClass} />
                     {t('onboarding.addAnotherTeamMember')}
                   </Button>
                 </div>
               </TabsContent>
               <TabsContent value="services" className={tabsContentClass}>
-                <div className="space-y-2">
+                <div className={spaceY2Class}>
                   <Label>{t('onboarding.servicesTitle')}</Label>
-                  <p className="text-sm text-gray-500">{t('onboarding.servicesDescription')}</p>
+                  <p className={inviteDescClass}>{t('onboarding.servicesDescription')}</p>
                 </div>
-                <div className="space-y-4">
-                  {[1, 2, 3].map((index) => (
-                    <div key={index} className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                      <div className="space-y-2 md:col-span-2">
-                        <Label htmlFor={`service-${index}`}>{t('onboarding.services')}</Label>
-                        <Input id={`service-${index}`} placeholder="e.g., Annual Check-up" />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor={`price-${index}`}>Price ($)</Label>
+                <div className={gridHeadClass}>
+                  <span>{t('onboarding.services')}</span>
+                  <span className={priceHeadClass}>{t('onboarding.price')}</span>
+                </div>
+                <div className={spaceY4Class}>
+                  {servicesList.map((service, index) => (
+                    <div key={service.id} className={gridRowClass}>
+                      <Input id={`service-${index}`} placeholder="e.g., Annual Check-up" className={serviceInputClass} />
+                      <div className={flexRowClass}>
                         <Input id={`price-${index}`} type="number" placeholder="0.00" />
+                        <span>฿</span>
+                        <Button
+                          type="button"
+                          size="icon"
+                          variant="ghost"
+                          onClick={() =>
+                            setServicesList((prev) =>
+                              prev.length > 1 ? prev.filter((_, i) => i !== index) : prev,
+                            )
+                          }
+                        >
+                          <Trash2 className={iconSmallClass} />
+                        </Button>
                       </div>
                     </div>
                   ))}
-                  <Button variant="outline" className="w-full">
-                    <Plus className="mr-2 h-4 w-4" />
+                  <Button
+                    variant="outline"
+                    className={addButtonClass}
+                    type="button"
+                    onClick={() =>
+                      setServicesList((prev) => [...prev, { id: Date.now() }])
+                    }
+                  >
+                    <Plus className={plusIconClass} />
                     {t('onboarding.addAnotherService')}
                   </Button>
                 </div>
@@ -181,7 +224,7 @@ export default function SetupPage() {
             <Button variant="outline" asChild>
               <Link href="/dashboard">{t('onboarding.skipForNow')}</Link>
             </Button>
-            <div className="flex space-x-2">
+            <div className={footerButtonsClass}>
               <Button variant="outline" onClick={handlePrev} disabled={currentStep === 'clinic'}>
                 {t('onboarding.previousStep')}
               </Button>
