@@ -5,7 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { requestPasswordReset } from "@/lib/api/auth";
 import { useTranslation } from "@/lib/i18n";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { useState } from "react";
+import * as z from "zod";
 import { cn } from "@/lib/utils";
 
 const formRootClass = "flex flex-col gap-6";
@@ -28,12 +33,35 @@ export function ResetPasswordForm({
   ...props
 }: React.ComponentProps<"div">) {
   const { t } = useTranslation();
+  const [message, setMessage] = useState('');
+
+  const schema = z
+    .object({
+      email: z.string().min(1, t('auth.requiredField')).email(t('auth.invalidEmail')),
+    })
+    .required();
+
+  type FormValues = z.infer<typeof schema>;
+
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormValues>({
+    resolver: zodResolver(schema),
+  });
+
+  const onSubmit = async (values: FormValues) => {
+    setMessage('');
+    try {
+      await requestPasswordReset(values);
+      setMessage(t('auth.errorCodes.AUTH_RESET_EMAIL_SENT'));
+    } catch (err: any) {
+      setMessage(t('auth.errorCodes.AUTH_INVALID_TOKEN'));
+    }
+  };
 
   return (
     <div className={cn(formRootClass, className)} {...props}>
       <Card className={cardClass}>
         <CardContent className={cardContentClass}>
-          <form className={formClass}>
+          <form className={formClass} onSubmit={handleSubmit(onSubmit)} noValidate>
             <div className={formGroupClass}>
               <div className={headingGroupClass}>
                 <h1 className={headingTextClass}>{t("auth.resetPasswordTitle")}</h1>
@@ -47,10 +75,13 @@ export function ResetPasswordForm({
                   id="email"
                   type="email"
                   placeholder={t("auth.emailPlaceholder")}
-                  required
+                  aria-invalid={!!errors.email}
+                  {...register('email')}
+                  disabled={isSubmitting}
                 />
+                {errors.email && <p className="text-destructive text-sm -mt-1">{errors.email.message}</p>}
               </div>
-              <Button type="submit" className={submitButtonClass}>
+              <Button type="submit" className={submitButtonClass} disabled={isSubmitting}>
                 {t("auth.continue")}
               </Button>
               <div className={backLinkWrapperClass}>
@@ -58,6 +89,7 @@ export function ResetPasswordForm({
                   {t("auth.backToLogin")}
                 </a>
               </div>
+              {message && <p className="text-center text-sm mt-2">{message}</p>}
             </div>
           </form>
           <div className={imageContainerClass}>
