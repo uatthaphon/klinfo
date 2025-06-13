@@ -74,19 +74,19 @@ export function SignUpForm({ className, ...props }: React.ComponentProps<'div'>)
         name: values.name,
         email: values.email,
         password: values.password,
-      })
+      });
       if (res?.data?.accessToken) {
-        localStorage.setItem('accessToken', res.data.accessToken)
+        localStorage.setItem('accessToken', res.data.accessToken);
       }
-      localStorage.setItem('userName', values.name)
-      router.push(`/auth/signup/success?name=${encodeURIComponent(values.name)}`)
+      localStorage.setItem('userName', values.name);
+      router.push(`/auth/signup/success?name=${encodeURIComponent(values.name)}`);
     } catch (err: unknown) {
       const code = typeof err === 'object' && err && 'code' in err ? (err as { code: string }).code : 'unknown';
       const mapped = mapSignupErrorCode(code, t);
       if (mapped?.field) {
         setFormError(mapped.field as keyof FormValues, { type: 'server', message: mapped.message });
       } else {
-        setServerError(t(`auth.errorCodes.${code}`) || t('auth.errorCodes.unknown'));
+        setServerError(t(`auth.errorCodes.${code}`) || t('auth.errorCodes.UNKNOWN'));
       }
     }
   };
