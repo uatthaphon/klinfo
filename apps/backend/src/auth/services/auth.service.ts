@@ -164,4 +164,32 @@ export class AuthService {
       data: null,
     };
   }
+
+  async resendVerification(email: string): Promise<any> {
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (!user) {
+      throw new BadRequestException({
+        success: false,
+        ...ResponseMeta.Auth.UserNotFound,
+        data: null,
+      });
+    }
+    if (user.isEmailVerified) {
+      return {
+        success: true,
+        ...ResponseMeta.Auth.EmailVerified,
+        data: null,
+      };
+    }
+    const verifyToken = await this.jwtService.signAsync(
+      { sub: user.id, purpose: 'verify' },
+      { expiresIn: '1d' },
+    );
+    await this.mailService.sendEmailVerification(user.email, verifyToken);
+    return {
+      success: true,
+      ...ResponseMeta.Auth.VerificationEmailSent,
+      data: null,
+    };
+  }
 }

@@ -48,3 +48,8 @@ export async function verifyEmail(data: { email: string; token: string }) {
   const res = await api.post(`${API_BASE}/auth/verify-email`, data);
   return res.data;
 }
+
+export async function resendVerificationEmail(email: string) {
+  const res = await api.post(`${API_BASE}/auth/resend-verification`, { email })
+  return res.data
+}

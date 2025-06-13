@@ -31,14 +31,22 @@ export default function SignupSuccessPage() {
   const params = useSearchParams()!;
   const { t } = useTranslation();
   const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
 
   useEffect(() => {
     const pName = params.get('name');
-    const stored = localStorage.getItem('userName');
+    const pEmail = params.get('email');
+    const storedName = localStorage.getItem('userName');
+    const storedEmail = localStorage.getItem('userEmail');
     if (pName) {
       setName(pName);
-    } else if (stored) {
-      setName(stored);
+    } else if (storedName) {
+      setName(storedName);
+    }
+    if (pEmail) {
+      setEmail(pEmail);
+    } else if (storedEmail) {
+      setEmail(storedEmail);
     }
   }, [params]);
 
@@ -85,7 +93,7 @@ export default function SignupSuccessPage() {
           </CardContent>
           <CardFooter>
             <Button asChild className={buttonClass}>
-              <Link href="/auth/verify-email">{t('onboarding.continueToDashboard')}</Link>
+              <Link href={`/auth/verify-email?email=${encodeURIComponent(email)}`}>{t('onboarding.proceedToVerification')}</Link>
             </Button>
           </CardFooter>
         </Card>
