@@ -71,7 +71,10 @@ export default function SetupPage() {
                         <SelectValue placeholder={t('onboarding.timezone')} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="asia_bangkok">Asia/Bangkok</SelectItem>
+                        <SelectItem value="asia_bangkok">UTC+7 Asia/Bangkok</SelectItem>
+                        <SelectItem value="asia_singapore">UTC+8 Asia/Singapore</SelectItem>
+                        <SelectItem value="asia_kuala_lumpur">UTC+8 Asia/Kuala_Lumpur</SelectItem>
+                        <SelectItem value="asia_jakarta">UTC+7 Asia/Jakarta</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
