@@ -48,4 +48,21 @@ export class MailService {
       Logger.log(`Preview URL: ${nodemailer.getTestMessageUrl(info)}`);
     }
   }
+
+  async sendEmailVerification(to: string, token: string) {
+    const appUrl = this.config.get<string>('APP_URL') || 'http://localhost:3001';
+    const verifyLink = `${appUrl}/auth/verify-email?token=${token}&email=${encodeURIComponent(to)}`;
+    const message = {
+      from: this.config.get<string>('SMTP_FROM', 'noreply@example.com'),
+      to,
+      subject: 'Verify your email',
+      text: `Click the following link to verify your email: ${verifyLink}`,
+      html: `<p>Click the following link to verify your email:</p><p><a href="${verifyLink}">${verifyLink}</a></p>`,
+    };
+
+    const info = await this.transporter.sendMail(message);
+    if (nodemailer.getTestMessageUrl(info)) {
+      Logger.log(`Preview URL: ${nodemailer.getTestMessageUrl(info)}`);
+    }
+  }
 }

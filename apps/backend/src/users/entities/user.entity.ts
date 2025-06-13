@@ -1,22 +1,23 @@
-
-
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { ClinicMember } from '../../clinics/entities/clinic-member.entity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm'
+import { ClinicMember } from '../../clinics/entities/clinic-member.entity'
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id: string
 
   @Column({ unique: true })
-  email: string;
+  email: string
 
   @Column()
-  name: string;
+  name: string
 
   @Column()
-  password: string;
+  password: string
+
+  @Column({ default: false })
+  isEmailVerified: boolean
 
   @OneToMany(() => ClinicMember, member => member.user)
-  clinicMemberships: ClinicMember[];
+  clinicMemberships: ClinicMember[]
 }

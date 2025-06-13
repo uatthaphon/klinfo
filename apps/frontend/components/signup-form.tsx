@@ -75,7 +75,7 @@ export function SignUpForm({ className, ...props }: React.ComponentProps<'div'>)
         email: values.email,
         password: values.password,
       });
-      router.push('/auth/login');
+      router.push(`/auth/signup/success?name=${encodeURIComponent(values.name)}`);
     } catch (err: unknown) {
       const code = typeof err === 'object' && err && 'code' in err ? (err as { code: string }).code : 'unknown';
       const mapped = mapSignupErrorCode(code, t);
