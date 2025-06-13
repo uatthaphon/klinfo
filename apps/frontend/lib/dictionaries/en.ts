@@ -34,7 +34,7 @@ export default {
       free: 'Best for solo clinics just getting started',
       standard: 'Ideal for small clinics with a few staff',
       pro: 'Best for growing clinics that need more features',
-      premium: 'Perfect for clinics with multiple branches',
+      premium: 'Perfect for clinics with multiple branches. Additional branches may incur extra fees.',
     },
     perMonth: '/mo',
     features: {
