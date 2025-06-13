@@ -64,8 +64,11 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
   const onSubmit = async (values: FormValues) => {
     setServerError('');
     try {
-      await login(values);
-      router.push('/dashboard');
+      const res = await login(values)
+      if (res?.data?.accessToken) {
+        localStorage.setItem('accessToken', res.data.accessToken)
+      }
+      router.push('/dashboard')
     } catch (err: unknown) {
       const code = typeof err === 'object' && err && 'code' in err ? (err as { code: string }).code : 'UNKNOWN';
       const mapped = mapLoginErrorCode(code, t);

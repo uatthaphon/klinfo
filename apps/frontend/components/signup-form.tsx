@@ -70,12 +70,16 @@ export function SignUpForm({ className, ...props }: React.ComponentProps<'div'>)
   const onSubmit = async (values: FormValues) => {
     setServerError('');
     try {
-      await signup({
+      const res = await signup({
         name: values.name,
         email: values.email,
         password: values.password,
-      });
-      router.push(`/auth/signup/success?name=${encodeURIComponent(values.name)}`);
+      })
+      if (res?.data?.accessToken) {
+        localStorage.setItem('accessToken', res.data.accessToken)
+      }
+      localStorage.setItem('userName', values.name)
+      router.push(`/auth/signup/success?name=${encodeURIComponent(values.name)}`)
     } catch (err: unknown) {
       const code = typeof err === 'object' && err && 'code' in err ? (err as { code: string }).code : 'unknown';
       const mapped = mapSignupErrorCode(code, t);
