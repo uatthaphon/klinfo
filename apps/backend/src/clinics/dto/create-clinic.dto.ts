@@ -9,4 +9,26 @@ export class CreateClinicDto {
 
   @IsOptional()
   language?: string
+
+  @IsOptional()
+  phone?: string
+
+  @IsOptional()
+  city?: string
+
+  @IsOptional()
+  state?: string
+
+  @IsOptional()
+  zip?: string
+
+  @IsOptional()
+  email?: string
+
+  @IsOptional()
+  website?: string
+
+  @IsOptional()
+  googleMap?: string
+
 }

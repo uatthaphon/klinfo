@@ -2,7 +2,7 @@ import { Injectable, NestMiddleware } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
 import { DataSource } from 'typeorm';
 import { CLINIC_MEMBER_KEY } from '../decorators/permissions.decorator';
-import { ClinicMember } from 'src/clinics/entities/clinic-member.entity';
+import { ClinicMember } from 'src/clinic-members/entities/clinic-member.entity';
 
 @Injectable()
 export class ClinicMemberMiddleware implements NestMiddleware {

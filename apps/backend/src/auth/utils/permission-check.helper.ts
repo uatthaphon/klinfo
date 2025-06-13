@@ -1,4 +1,4 @@
-import { ClinicMember } from 'src/clinics/entities/clinic-member.entity';
+import { ClinicMember } from 'src/clinic-members/entities/clinic-member.entity';
 import { Permission } from '../constants/permission.enum';
 import { RolePermissions } from '../constants/role-permissions';
 

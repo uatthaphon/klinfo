@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm'
-import { ClinicMember } from '../../clinics/entities/clinic-member.entity'
+import { ClinicMember } from '../../clinic-members/entities/clinic-member.entity'
 
 @Entity()
 export class User {
@@ -18,6 +18,6 @@ export class User {
   @Column({ default: false })
   isEmailVerified: boolean
 
-  @OneToMany(() => ClinicMember, member => member.user)
+  @OneToMany(() => ClinicMember, clinicMember => clinicMember.user)
   clinicMemberships: ClinicMember[]
 }

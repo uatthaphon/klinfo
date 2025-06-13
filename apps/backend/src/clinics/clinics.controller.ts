@@ -9,7 +9,7 @@ export class ClinicsController {
 
   @UseGuards(AuthGuard('jwt'))
   @Post()
-  create(@Req() req: any, @Body() dto: CreateClinicDto) {
-    return this.clinicsService.createClinic(req.user.id, dto)
+  create(@Body() dto: CreateClinicDto) {
+    return this.clinicsService.createClinic(dto)
   }
 }

@@ -1,9 +1,9 @@
 import { Role } from 'src/auth/constants/role.enum';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
-import { Clinic } from './clinic.entity';
+import { Clinic } from '../../clinics/entities/clinic.entity';
 
-@Entity()
+@Entity({ name: 'clinic_members' })
 export class ClinicMember {
   @PrimaryGeneratedColumn('uuid')
   id: string;
