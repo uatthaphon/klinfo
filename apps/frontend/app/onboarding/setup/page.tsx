@@ -1,6 +1,17 @@
 "use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -10,89 +21,270 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { createClinic } from "@/lib/api/clinics";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTranslation } from "@/lib/i18n";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 
-const containerClass =
-  "bg-muted flex min-h-svh flex-col items-center justify-center p-6 md:p-10";
-const wrapperClass = "w-full max-w-md";
-const cardClass = "p-6 space-y-4";
-const formClass = "space-y-4";
-const buttonClass = "w-full";
-const headingClass = "text-2xl font-bold text-center";
-const groupClass = "grid gap-2";
+const containerClass = "flex min-h-screen flex-col items-center justify-center p-4 md:p-8";
+const mainClass = "w-full max-w-3xl";
+const cardClass = "w-full";
+const tabsListClass = "grid w-full grid-cols-3";
+const tabsContentClass = "space-y-4 pt-4";
+const gridTwoClass = "grid grid-cols-1 gap-4 md:grid-cols-2";
+const gridThreeClass = "grid grid-cols-1 gap-4 md:grid-cols-3";
+const footerClass = "flex justify-between";
 
-export default function FirstTimeSetupPage() {
-  const { t, setLang } = useTranslation();
+export default function SetupPage() {
+  const { t } = useTranslation();
   const router = useRouter();
-  const [clinic, setClinic] = useState("");
-  const [timezone, setTimezone] = useState("");
-  const [language, setLanguage] = useState<"th" | "en">("th");
+  const [currentStep, setCurrentStep] = useState("clinic");
 
-  useEffect(() => {
-    setTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone);
-  }, []);
-
-  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    try {
-      await createClinic({ name: clinic, timezone, language });
-      localStorage.setItem("timezone", timezone);
-      localStorage.setItem("lang", language);
-      setLang(language);
+  const handleNext = () => {
+    if (currentStep === "clinic") {
+      setCurrentStep("team");
+    } else if (currentStep === "team") {
+      setCurrentStep("services");
+    } else {
       router.push("/dashboard");
-    } catch (err) {
-      console.error(err);
     }
-  }
+  };
+
+  const handlePrev = () => {
+    if (currentStep === "services") {
+      setCurrentStep("team");
+    } else if (currentStep === "team") {
+      setCurrentStep("clinic");
+    }
+  };
 
   return (
     <div className={containerClass}>
-      <div className={wrapperClass}>
-        <Card>
-          <CardContent className={cardClass}>
-            <h1 className={headingClass}>{t("onboarding.firstTimeSetup")}</h1>
-            <form className={formClass} onSubmit={onSubmit}>
-              <div className={groupClass}>
-                <Label htmlFor="clinic">{t("onboarding.clinicName")}</Label>
-                <Input
-                  id="clinic"
-                  type="text"
-                  value={clinic}
-                  onChange={(e) => setClinic(e.target.value)}
-                />
-              </div>
-              <div className={groupClass}>
-                <Label htmlFor="timezone">{t("onboarding.timezone")}</Label>
-                <Input
-                  id="timezone"
-                  type="text"
-                  value={timezone}
-                  onChange={(e) => setTimezone(e.target.value)}
-                />
-              </div>
-              <div className={groupClass}>
-                <Label htmlFor="language">{t("onboarding.language")}</Label>
-                <Select
-                  value={language}
-                  onValueChange={(v) => setLanguage(v as "th" | "en")}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="th">ไทย</SelectItem>
-                    <SelectItem value="en">English</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <Button type="submit" className={buttonClass}>
-                {t("onboarding.saveContinue")}
-              </Button>
-            </form>
+      <div className={mainClass}>
+        <Card className={cardClass}>
+          <CardHeader>
+            <CardTitle className="text-2xl">
+              {t("onboarding.firstTimeSetup")}
+            </CardTitle>
+            <CardDescription>
+              {t("onboarding.setupDescription")}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Tabs value={currentStep} className="w-full">
+              <TabsList className={tabsListClass}>
+                <TabsTrigger value="clinic">
+                  {t("onboarding.clinicDetails")}
+                </TabsTrigger>
+                <TabsTrigger value="team">
+                  {t("onboarding.teamMembers")}
+                </TabsTrigger>
+                <TabsTrigger value="services">
+                  {t("onboarding.services")}
+                </TabsTrigger>
+              </TabsList>
+              <TabsContent value="clinic" className={tabsContentClass}>
+                <div className="space-y-2">
+                  <Label htmlFor="clinicName">
+                    {t("onboarding.clinicName")}
+                  </Label>
+                  <Input id="clinicName" defaultValue="" />
+                </div>
+                <div className={gridTwoClass}>
+                  <div className="space-y-2">
+                    <Label htmlFor="timezone">
+                      {t("onboarding.timezone")}
+                    </Label>
+                    <Select defaultValue="asia_bangkok">
+                      <SelectTrigger>
+                        <SelectValue
+                          placeholder={t("onboarding.timezone")}
+                        />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="asia_bangkok">Asia/Bangkok</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="language">
+                      {t("onboarding.language")}
+                    </Label>
+                    <Select defaultValue="th">
+                      <SelectTrigger>
+                        <SelectValue
+                          placeholder={t("onboarding.language")}
+                        />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="th">🇹🇭 ไทย</SelectItem>
+                        <SelectItem value="en">🇺🇸 English</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="address">{t("onboarding.address")}</Label>
+                  <Input id="address" placeholder="" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="phone">{t("onboarding.phone")}</Label>
+                  <Input id="phone" placeholder="" />
+                </div>
+                <div className={gridThreeClass}>
+                  <div className="space-y-2">
+                    <Label htmlFor="city">{t("onboarding.city")}</Label>
+                    <Input id="city" placeholder="" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="state">{t("onboarding.state")}</Label>
+                    <Input id="state" placeholder="" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="zip">{t("onboarding.zip")}</Label>
+                    <Input id="zip" placeholder="" />
+                  </div>
+                </div>
+              </TabsContent>
+              <TabsContent value="team" className={tabsContentClass}>
+                <div className="space-y-2">
+                  <Label>{t("onboarding.inviteTeamMembers")}</Label>
+                  <p className="text-sm text-gray-500">
+                    {t("onboarding.inviteTeamDescription")}
+                  </p>
+                </div>
+                <div className="space-y-4">
+                  {[1, 2].map((index) => (
+                    <div
+                      key={index}
+                      className="grid grid-cols-1 gap-4 md:grid-cols-3"
+                    >
+                      <div className="space-y-2">
+                        <Label htmlFor={`name-${index}`}>
+                          {t("auth.name")}
+                        </Label>
+                        <Input
+                          id={`name-${index}`}
+                          placeholder={t("auth.name")}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor={`email-${index}`}>
+                          {t("auth.email")}
+                        </Label>
+                        <Input
+                          id={`email-${index}`}
+                          type="email"
+                          placeholder="email@example.com"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor={`role-${index}`}>{t("onboarding.role")}</Label>
+                        <Select>
+                          <SelectTrigger>
+                            <SelectValue
+                              placeholder={t("onboarding.role")}
+                            />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="doctor">
+                              {t("onboarding.roles.doctor")}
+                            </SelectItem>
+                            <SelectItem value="nurse">
+                              {t("onboarding.roles.nurse")}
+                            </SelectItem>
+                            <SelectItem value="receptionist">
+                              {t("onboarding.roles.receptionist")}
+                            </SelectItem>
+                            <SelectItem value="admin">
+                              {t("onboarding.roles.admin")}
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  ))}
+                  <Button variant="outline" className="w-full">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="mr-2 h-4 w-4"
+                    >
+                      <path d="M5 12h14" />
+                      <path d="M12 5v14" />
+                    </svg>
+                    {t("onboarding.addAnotherTeamMember")}
+                  </Button>
+                </div>
+              </TabsContent>
+              <TabsContent value="services" className={tabsContentClass}>
+                <div className="space-y-2">
+                  <Label>{t("onboarding.servicesTitle")}</Label>
+                  <p className="text-sm text-gray-500">
+                    {t("onboarding.servicesDescription")}
+                  </p>
+                </div>
+                <div className="space-y-4">
+                  {[1, 2, 3].map((index) => (
+                    <div
+                      key={index}
+                      className="grid grid-cols-1 gap-4 md:grid-cols-3"
+                    >
+                      <div className="space-y-2 md:col-span-2">
+                        <Label htmlFor={`service-${index}`}>
+                          {t("onboarding.services")}
+                        </Label>
+                        <Input
+                          id={`service-${index}`}
+                          placeholder="e.g., Annual Check-up"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor={`price-${index}`}>Price ($)</Label>
+                        <Input id={`price-${index}`} type="number" placeholder="0.00" />
+                      </div>
+                    </div>
+                  ))}
+                  <Button variant="outline" className="w-full">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="mr-2 h-4 w-4"
+                    >
+                      <path d="M5 12h14" />
+                      <path d="M12 5v14" />
+                    </svg>
+                    {t("onboarding.addAnotherService")}
+                  </Button>
+                </div>
+              </TabsContent>
+            </Tabs>
           </CardContent>
+          <CardFooter className={footerClass}>
+            <Button variant="outline" asChild>
+              <Link href="/dashboard">{t("onboarding.skipForNow")}</Link>
+            </Button>
+            <Button variant="outline" onClick={handlePrev} disabled={currentStep === "clinic"}>
+              {t("onboarding.previousStep")}
+            </Button>
+            <Button onClick={handleNext}>
+              {currentStep === "services"
+                ? t("onboarding.finishSetup")
+                : t("onboarding.nextStep")}
+            </Button>
+          </CardFooter>
         </Card>
       </div>
     </div>
