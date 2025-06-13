@@ -1,8 +1,8 @@
 {
   "name": "Klinfo",
   "private": true,
+  "version": "1.0.0",
   "scripts": {
-    "version": "1.0.0",
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rm -rf apps/**/.next",
     "setup": "pnpm run clean && pnpm install && pnpm --filter backend run build && pnpm --filter frontend run build"
