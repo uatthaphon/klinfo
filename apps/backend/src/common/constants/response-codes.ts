@@ -31,6 +31,11 @@ export const ResponseMeta = {
       message: 'Password reset email sent',
       statusCode: HttpStatus.OK,
     },
+    UserNotFound: {
+      code: 'AUTH_USER_NOT_FOUND',
+      message: 'User not found',
+      statusCode: HttpStatus.BAD_REQUEST,
+    },
     InvalidResetToken: {
       code: 'AUTH_INVALID_TOKEN',
       message: 'Invalid email or token',

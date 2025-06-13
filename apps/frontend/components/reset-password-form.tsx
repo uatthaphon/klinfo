@@ -5,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { requestPasswordReset } from '@/lib/api/auth';
+import { mapAuthErrorCode } from '@/lib/api/error-handler';
 import { useTranslation } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -46,6 +47,7 @@ export function ResetPasswordForm({ className, ...props }: React.ComponentProps<
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
+    setError: setFormError,
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
   });
@@ -55,8 +57,20 @@ export function ResetPasswordForm({ className, ...props }: React.ComponentProps<
     try {
       await requestPasswordReset(values);
       setMessage(t('auth.errorCodes.AUTH_RESET_EMAIL_SENT'));
-    } catch (err: any) {
-      setMessage(t('auth.errorCodes.AUTH_INVALID_TOKEN'));
+    } catch (err: unknown) {
+      const code =
+        typeof err === 'object' && err && 'code' in err
+          ? (err as { code: string }).code
+          : 'UNKNOWN';
+      const mapped = mapAuthErrorCode(code, t);
+      if (mapped?.field) {
+        setFormError(mapped.field as keyof FormValues, {
+          type: 'server',
+          message: mapped.message,
+        });
+      } else {
+        setMessage(t(`auth.errorCodes.${code}`) || t('auth.errorCodes.UNKNOWN'));
+      }
     }
   };
 
