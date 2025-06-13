@@ -56,7 +56,7 @@ export function SignUpForm({ className, ...props }: React.ComponentProps<'div'>)
     }
     if (!password) {
       errors.password = `${t('auth.requiredField')} (${t('auth.password')})`;
-    } else if (password.length < 2) {
+    } else if (password.length < 6) {
       errors.password = t('auth.passwordTooShort');
     }
     if (!confirmPassword) {
