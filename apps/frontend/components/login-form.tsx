@@ -6,6 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useTranslation } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { login } from "@/lib/api/auth";
+import { mapLoginErrorCode } from "@/lib/api/error-handler";
 
 const rootClass = "flex flex-col gap-6";
 const cardClass = "overflow-hidden p-0";
@@ -30,12 +37,53 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"div">) {
   const { t } = useTranslation();
+  const router = useRouter();
+  const [serverError, setServerError] = useState("");
+
+  const schema = z
+    .object({
+      email: z
+        .string()
+        .min(1, `${t("auth.requiredField")} (${t("auth.email")})`)
+        .email(t("auth.invalidEmail")),
+      password: z
+        .string()
+        .min(1, `${t("auth.requiredField")} (${t("auth.password")})`),
+    })
+    .required();
+
+  type FormValues = z.infer<typeof schema>;
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    setError: setFormError,
+  } = useForm<FormValues>({
+    resolver: zodResolver(schema),
+  });
+
+  const onSubmit = async (values: FormValues) => {
+    setServerError("");
+    try {
+      await login(values);
+      router.push("/dashboard");
+    } catch (err: any) {
+      const code = err.code || "UNKNOWN";
+      const mapped = mapLoginErrorCode(code, t);
+      if (mapped?.field) {
+        setFormError(mapped.field as keyof FormValues, { type: "server", message: mapped.message });
+      } else {
+        setServerError(t(`auth.errorCodes.${code}`) || t("auth.errorCodes.UNKNOWN"));
+      }
+    }
+  };
 
   return (
     <div className={cn(rootClass, className)} {...props}>
       <Card className={cardClass}>
         <CardContent className={cardContentClass}>
-          <form className={formClass}>
+          <form className={formClass} onSubmit={handleSubmit(onSubmit)} noValidate>
             <div className={formGroupClass}>
               <div className={headingWrapperClass}>
                 <h1 className={headingClass}>{t("auth.welcomeBack")}</h1>
@@ -49,8 +97,15 @@ export function LoginForm({
                   id="email"
                   type="email"
                   placeholder={t("auth.emailPlaceholder")}
-                  required
+                  aria-invalid={!!errors.email}
+                  {...register("email")}
+                  disabled={isSubmitting}
                 />
+                {errors.email && (
+                  <p className="text-destructive text-sm -mt-1">
+                    {errors.email.message}
+                  </p>
+                )}
               </div>
               <div className={inputGroupClass}>
                 <div className={passwordLabelWrapperClass}>
@@ -62,9 +117,24 @@ export function LoginForm({
                     {t("auth.forgotPassword")}
                   </a>
                 </div>
-                <Input id="password" type="password" required />
+                <Input
+                  id="password"
+                  type="password"
+                  aria-invalid={!!errors.password}
+                  {...register("password")}
+                  disabled={isSubmitting}
+                />
+                {errors.password && (
+                  <p className="text-destructive text-sm -mt-1">
+                    {errors.password.message}
+                  </p>
+                )}
               </div>
-              <Button type="submit" className={submitButtonClass}>
+              <Button
+                type="submit"
+                className={submitButtonClass}
+                disabled={isSubmitting}
+              >
                 {t("auth.login")}
               </Button>
               <div className={footerTextClass}>
@@ -73,6 +143,9 @@ export function LoginForm({
                   {t("auth.signup")}
                 </a>
               </div>
+              {serverError && (
+                <p className="text-destructive text-sm text-center">{serverError}</p>
+              )}
             </div>
           </form>
           <div className={imageWrapperClass}>

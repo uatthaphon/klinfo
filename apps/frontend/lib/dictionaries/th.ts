@@ -88,6 +88,11 @@ export default {
       INVALID_CREDENTIALS: 'อีเมลหรือรหัสผ่านไม่ถูกต้อง',
       USER_NOT_FOUND: 'ไม่พบบัญชีผู้ใช้',
       WEAK_PASSWORD: 'รหัสผ่านไม่ปลอดภัยเพียงพอ',
+      AUTH_EMAIL_ALREADY_REGISTERED: 'อีเมลนี้ถูกใช้ไปแล้ว',
+      AUTH_INVALID_CREDENTIALS: 'อีเมลหรือรหัสผ่านไม่ถูกต้อง',
+      AUTH_USER_NOT_FOUND: 'ไม่พบบัญชีผู้ใช้',
+      AUTH_WEAK_PASSWORD: 'รหัสผ่านไม่ปลอดภัยเพียงพอ',
+      AUTH_INVALID_TOKEN: 'โทเคนไม่ถูกต้อง',
     },
   },
   user: {

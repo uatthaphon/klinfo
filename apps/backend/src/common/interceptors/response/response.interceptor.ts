@@ -9,7 +9,7 @@ export class ResponseInterceptor implements NestInterceptor {
       map((response) => {
         return {
           success: true,
-          code: response?.code || 'success.default',
+          code: response?.code || 'SUCCESS_DEFAULT',
           message: response?.message || 'Success',
           data: response?.data ?? response,
         };

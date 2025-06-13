@@ -2,32 +2,32 @@ import { HttpStatus } from '@nestjs/common';
 export const ResponseMeta = {
   Auth: {
     EmailAlreadyRegistered: {
-      code: 'auth.emailAlreadyRegistered',
+      code: 'AUTH_EMAIL_ALREADY_REGISTERED',
       message: 'Email is already registered',
       statusCode: HttpStatus.BAD_REQUEST,
     },
     SignupSuccess: {
-      code: 'auth.signup.success',
+      code: 'AUTH_SIGNUP_SUCCESS',
       message: 'Signed up successfully',
       statusCode: HttpStatus.CREATED,
     },
     LoginSuccess: {
-      code: 'auth.login.success',
+      code: 'AUTH_LOGIN_SUCCESS',
       message: 'Logged in successfully',
       statusCode: HttpStatus.OK,
     },
     InvalidCredentials: {
-      code: 'auth.invalidCredentials',
+      code: 'AUTH_INVALID_CREDENTIALS',
       message: 'Invalid credentials',
       statusCode: HttpStatus.UNAUTHORIZED,
     },
     PasswordResetSuccess: {
-      code: 'auth.passwordReset.success',
+      code: 'AUTH_PASSWORD_RESET_SUCCESS',
       message: 'Password has been reset',
       statusCode: HttpStatus.OK,
     },
     InvalidResetToken: {
-      code: 'auth.invalidToken',
+      code: 'AUTH_INVALID_TOKEN',
       message: 'Invalid email or token',
       statusCode: HttpStatus.UNAUTHORIZED,
     },
