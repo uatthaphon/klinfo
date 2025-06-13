@@ -43,3 +43,8 @@ export async function requestPasswordReset(data: RequestPasswordResetDto) {
   const res = await api.post(`${API_BASE}/auth/request-password-reset`, data);
   return res.data;
 }
+
+export async function verifyEmail(data: { email: string; token: string }) {
+  const res = await api.post(`${API_BASE}/auth/verify-email`, data)
+  return res.data
+}

@@ -1,9 +1,18 @@
-import axios from 'axios';
+import axios from 'axios'
+import { config } from '../config'
 
 export const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: config.apiBase,
   withCredentials: false,
-});
+})
+
+api.interceptors.request.use((cfg) => {
+  if (typeof window !== 'undefined') {
+    const token = localStorage.getItem('accessToken')
+    if (token) cfg.headers.Authorization = `Bearer ${token}`
+  }
+  return cfg
+})
 
 api.interceptors.response.use(
   (response) => response,
