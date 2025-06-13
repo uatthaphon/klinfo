@@ -75,9 +75,9 @@ export class AuthService {
       where: { email: dto.email },
     });
     if (!user) {
-      throw new UnauthorizedException({
+      throw new BadRequestException({
         success: false,
-        ...ResponseMeta.Auth.InvalidResetToken,
+        ...ResponseMeta.Auth.UserNotFound,
         data: null,
       });
     }
