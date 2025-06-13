@@ -1,5 +1,6 @@
 'use client';
 
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -60,10 +61,11 @@ export function ResetPasswordForm({
             </div>
           </form>
           <div className={imageContainerClass}>
-            <img
+            <Image
               src="/vercel.svg"
               alt="Image"
               className={imageClass}
+              fill
             />
           </div>
         </CardContent>

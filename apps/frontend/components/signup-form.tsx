@@ -10,6 +10,7 @@ import { mapSignupErrorCode } from '@/lib/api/error-handler';
 import { useTranslation } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -75,8 +76,8 @@ export function SignUpForm({ className, ...props }: React.ComponentProps<'div'>)
         password: values.password,
       });
       router.push('/auth/login');
-    } catch (err: any) {
-      const code = err.code || 'unknown';
+    } catch (err: unknown) {
+      const code = typeof err === 'object' && err && 'code' in err ? (err as { code: string }).code : 'unknown';
       const mapped = mapSignupErrorCode(code, t);
       if (mapped?.field) {
         setFormError(mapped.field as keyof FormValues, { type: 'server', message: mapped.message });
@@ -175,7 +176,7 @@ export function SignUpForm({ className, ...props }: React.ComponentProps<'div'>)
             </div>
           </form>
           <div className={imageContainerClass}>
-            <img src="/vercel.svg" alt="Image" className={imageClass} />
+            <Image src="/vercel.svg" alt="Image" className={imageClass} fill />
           </div>
         </CardContent>
       </Card>

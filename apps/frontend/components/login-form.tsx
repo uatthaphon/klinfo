@@ -10,6 +10,7 @@ import { useTranslation } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -65,8 +66,8 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
     try {
       await login(values);
       router.push('/dashboard');
-    } catch (err: any) {
-      const code = err.code || 'UNKNOWN';
+    } catch (err: unknown) {
+      const code = typeof err === 'object' && err && 'code' in err ? (err as { code: string }).code : 'UNKNOWN';
       const mapped = mapLoginErrorCode(code, t);
       if (mapped?.field) {
         setFormError(mapped.field as keyof FormValues, { type: 'server', message: mapped.message });
@@ -127,7 +128,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
             </div>
           </form>
           <div className={imageWrapperClass}>
-            <img src="/vercel.svg" alt="Image" className={imageClass} />
+            <Image src="/vercel.svg" alt="Image" className={imageClass} fill />
           </div>
         </CardContent>
       </Card>
