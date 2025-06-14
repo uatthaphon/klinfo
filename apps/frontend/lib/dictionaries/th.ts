@@ -191,4 +191,19 @@ export default {
       contactSupport: 'ติดต่อทีมสนับสนุน',
     },
   },
+  onboardingEmptyState: {
+    welcome: 'ยินดีต้อนรับสู่ Klinfo!',
+    description: 'คุณยังไม่ได้เข้าร่วมหรือสร้างคลินิกใดๆ',
+    createClinic: 'สร้างคลินิกของคุณ',
+    joinClinic: 'เข้าร่วมคลินิกที่มีอยู่',
+    viewPricing: 'ดูราคา',
+    needHelp: 'ต้องการความช่วยเหลือ?',
+    faqLink: 'ดูคำถามที่พบบ่อย',
+  },
+  joinClinicPage: {
+    title: 'เข้าร่วมคลินิกที่มีอยู่',
+    description:
+      'ขอให้เจ้าของคลินิกเชิญคุณผ่านอีเมล เมื่อได้รับเชิญ คุณจะเห็นคลินิกที่นี่',
+    backToDashboard: 'กลับไปแดชบอร์ด',
+  },
 } as const;

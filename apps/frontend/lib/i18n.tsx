@@ -58,3 +58,10 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 export function useTranslation() {
   return useContext(TranslationContext);
 }
+
+export function useTranslations(prefix: string) {
+  const { t } = useTranslation();
+  return {
+    t: (key: string, vars?: Record<string, string>) => t(`${prefix}.${key}`, vars),
+  };
+}
