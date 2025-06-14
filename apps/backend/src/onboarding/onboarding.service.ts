@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { ClinicsService } from '../clinics/clinics.service';
-import { ServicesService } from '../services/services.service';
 import { DataSource } from 'typeorm';
-import { Clinic } from '../clinics/entities/clinic.entity';
-import { ClinicMember } from '../clinic-members/entities/clinic-member.entity';
 import { Role } from '../auth/constants/role.enum';
-import { ServiceEntity } from '../services/entities/service.entity';
-import { CreateOnboardingDto } from './dto/create-onboarding.dto';
+import { ClinicMember } from '../clinic-members/entities/clinic-member.entity';
+import { ClinicsService } from '../clinics/clinics.service';
+import { Clinic } from '../clinics/entities/clinic.entity';
 import { ResponseMeta } from '../common/constants/response-codes';
+import { ServiceEntity } from '../services/entities/service.entity';
+import { ServicesService } from '../services/services.service';
+import { CreateOnboardingDto } from './dto/create-onboarding.dto';
 
 @Injectable()
 export class OnboardingService {
@@ -23,11 +23,11 @@ export class OnboardingService {
       const clinicMemberRepo = manager.getRepository(ClinicMember);
       const serviceRepo = manager.getRepository(ServiceEntity);
 
-      const clinic = clinicRepo.create(dto.clinicInfo as any);
+      const clinic = clinicRepo.create(dto.clinicInfo);
       await clinicRepo.save(clinic);
 
       const owner = clinicMemberRepo.create({
-        clinic,
+        clinic: clinic,
         user: { id: userId } as any,
         role: Role.Owner,
       });
@@ -38,7 +38,7 @@ export class OnboardingService {
           throw new Error('Owner role cannot be assigned');
         }
         const firstMember = clinicMemberRepo.create({
-          clinic,
+          clinic: clinic,
           user: { id: dto.firstMember.userId } as any,
           role: dto.firstMember.role,
         });
@@ -47,7 +47,7 @@ export class OnboardingService {
 
       if (dto.services?.length) {
         const serviceEntities = dto.services.map((s) =>
-          serviceRepo.create({ clinic, ...s }),
+          serviceRepo.create({ clinic: clinic, ...s }),
         );
         await serviceRepo.save(serviceEntities);
       }

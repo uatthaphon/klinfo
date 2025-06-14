@@ -6,14 +6,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useTranslation } from '@/lib/i18n';
 import { setupClinic } from '@/lib/api/onboarding';
+import { useTranslation } from '@/lib/i18n';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Plus, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { useForm, useFieldArray } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useFieldArray, useForm } from 'react-hook-form';
 import * as z from 'zod';
 
 const containerClass = 'bg-muted flex min-h-screen flex-col items-center justify-center p-4 md:p-8';
@@ -31,7 +31,7 @@ const spaceY4Class = 'space-y-4';
 const spaceY5Class = 'space-y-5';
 const inviteDescClass = 'text-sm text-gray-500';
 const gridHeadClass = 'grid grid-cols-1 gap-4 md:grid-cols-3 font-medium';
-const gridRowClass = 'grid grid-cols-1 gap-4 md:grid-cols-3 items-end';
+const gridRowClass = 'grid grid-cols-1 gap-4 md:grid-cols-3 items-end md:items-start';
 const flexRowClass = 'flex items-center gap-2';
 const iconSmallClass = 'h-4 w-4';
 const addButtonClass = 'w-full';
@@ -42,13 +42,18 @@ const footerButtonsClass = 'flex space-x-2';
 const timezoneTextClass = 'text-muted-foreground indent-2';
 
 const serviceSchema = z.object({
-  name: z.string().min(1),
-  price: z.preprocess((v) => parseFloat(String(v || 0)), z.number()),
+  name: z.string().min(1, { message: 'Service name is required' }),
+  price: z.preprocess((v) => parseFloat(String(v || 0)), z.number().min(0, { message: 'Price must be at least 0' })),
+});
+
+const memberSchema = z.object({
+  email: z.string().email({ message: 'Valid email required' }),
+  role: z.enum(['doctor', 'staff']),
 });
 
 const schema = z.object({
-  name: z.string().min(1),
-  language: z.string().optional(),
+  name: z.string().min(1, { message: 'Clinic name is required' }),
+  language: z.string().min(1, { message: 'Language is required' }),
   phone: z.string().optional(),
   city: z.string().optional(),
   state: z.string().optional(),
@@ -56,38 +61,39 @@ const schema = z.object({
   email: z.string().optional(),
   website: z.string().optional(),
   googleMap: z.string().optional(),
-  services: z.array(serviceSchema),
+  members: z.array(memberSchema).max(1, { message: 'Only one member allowed on free plan' }),
+  services: z.array(serviceSchema).min(1, { message: 'At least one service is required' }),
 });
 
 export default function SetupPage() {
   const { t } = useTranslation();
   const router = useRouter();
-  const [currentStep, setCurrentStep] = useState('clinic');
+  const [currentStep, setCurrentStep] = useState<'clinic' | 'team' | 'services'>('clinic');
   const {
     register,
     control,
     handleSubmit,
     watch,
     setValue,
+    trigger,
+    formState: { errors },
   } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
       language: 'th',
       services: [{ name: '', price: 0 }],
+      members: [],
     },
+    mode: 'onTouched',
   });
   const { fields, append, remove } = useFieldArray({ control, name: 'services' });
+  const {
+    fields: fieldsMembers,
+    append: appendMember,
+    remove: removeMember,
+  } = useFieldArray({ control, name: 'members' });
 
-  const handleNext = async (data: any) => {
-    if (currentStep === 'clinic') {
-      setCurrentStep('team');
-      return;
-    }
-    if (currentStep === 'team') {
-      setCurrentStep('services');
-      return;
-    }
-
+  const onSubmit = async (data: any) => {
     await setupClinic({
       clinicInfo: {
         name: data.name,
@@ -102,12 +108,28 @@ export default function SetupPage() {
         googleMap: data.googleMap,
       },
       // owner will be assigned automatically on the backend
+      members: data.members,
       services: data.services.map((s: any) => ({
         name: s.name,
         price: s.price,
       })),
     });
     router.push('/dashboard');
+  };
+
+  const handleNext = async () => {
+    if (currentStep === 'clinic') {
+      const valid = await trigger(['name', 'language']);
+      if (valid) setCurrentStep('team');
+      return;
+    }
+    if (currentStep === 'team') {
+      // Validate the members field before advancing to services
+      const valid = await trigger(['members']);
+      if (valid) setCurrentStep('services');
+      return;
+    }
+    handleSubmit(onSubmit)();
   };
 
   const handlePrev = () => {
@@ -127,7 +149,7 @@ export default function SetupPage() {
             <CardDescription>{t('onboarding.setupDescription')}</CardDescription>
           </CardHeader>
           <CardContent>
-            <Tabs value={currentStep} className={tabsClass}>
+            <Tabs value={currentStep} onValueChange={setCurrentStep} className={tabsClass}>
               <TabsList className={tabsListClass}>
                 <TabsTrigger value="clinic">{t('onboarding.clinicDetails')}</TabsTrigger>
                 <TabsTrigger value="team">{t('onboarding.teamMembers')}</TabsTrigger>
@@ -135,14 +157,24 @@ export default function SetupPage() {
               </TabsList>
               <TabsContent value="clinic" className={tabsContentClass}>
                 <div className={spaceY2Class}>
-                  <Label htmlFor="clinicName">{t('onboarding.clinicName')}</Label>
-                  <Input id="clinicName" {...register('name')} />
+                  <Label htmlFor="clinicName">
+                    {t('onboarding.clinicName')} <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    id="clinicName"
+                    {...register('name')}
+                    required
+                    className={errors.name ? 'border-red-500' : ''}
+                  />
+                  {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
                 </div>
                 <div className={gridTwoClass}>
                   <div className={spaceY2Class}>
-                    <Label htmlFor="language">{t('onboarding.language')}</Label>
-                    <Select value={watch('language')} onValueChange={(v) => setValue('language', v)}>
-                      <SelectTrigger>
+                    <Label htmlFor="language">
+                      {t('onboarding.language')} <span className="text-red-500">*</span>
+                    </Label>
+                    <Select value={watch('language')} onValueChange={(v) => setValue('language', v)} required>
+                      <SelectTrigger className={errors.language ? 'border-red-500' : ''}>
                         <SelectValue placeholder={t('onboarding.language')} />
                       </SelectTrigger>
                       <SelectContent>
@@ -150,6 +182,7 @@ export default function SetupPage() {
                         <SelectItem value="en">🇺🇸 {t('onboarding.languageEnglish')}</SelectItem>
                       </SelectContent>
                     </Select>
+                    {errors.language && <p className="text-red-500 text-sm">{errors.language.message}</p>}
                   </div>
                   <div className={spaceY5Class}>
                     <Label htmlFor="timezone">{t('onboarding.timezone')}</Label>
@@ -198,7 +231,57 @@ export default function SetupPage() {
                     </Link>
                   </p>
                 </div>
-                <p className={inviteDescClass}>{t('onboarding.singleMemberNotice')}</p>
+                <div className={spaceY2Class}>
+                  {fieldsMembers.length < 1 && (
+                    <Button
+                      variant="outline"
+                      type="button"
+                      onClick={() => appendMember({ email: '', role: 'staff' })}
+                    >
+                      <Plus className={plusIconClass} />
+                      {t('onboarding.addMember')}
+                    </Button>
+                  )}
+                  {fieldsMembers.map((field, index) => (
+                    <div key={field.id} className={gridRowClass}>
+                      <Input
+                        placeholder="staff@example.com"
+                        {...register(`members.${index}.email` as const)}
+                        required
+                        type="email"
+                        className={errors.members && errors.members[index]?.email ? 'border-red-500' : ''}
+                      />
+                      <Select
+                        value={watch(`members.${index}.role`)}
+                        onValueChange={(v) => setValue(`members.${index}.role`, v)}
+                      >
+                        <SelectTrigger className={errors.members && errors.members[index]?.role ? 'border-red-500' : ''}>
+                          <SelectValue placeholder={t('onboarding.role')} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="doctor">{t('onboarding.roles.doctor')}</SelectItem>
+                          <SelectItem value="staff">{t('onboarding.roles.staff')}</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <Button type="button" size="icon" variant="ghost" onClick={() => removeMember(index)}>
+                        <Trash2 className={iconSmallClass} />
+                      </Button>
+                    </div>
+                  ))}
+                  {errors.members && typeof errors.members.message === 'string' && (
+                    <p className="text-red-500 text-sm">{errors.members.message}</p>
+                  )}
+                  {errors.members && Array.isArray(errors.members) && errors.members[0] && (
+                    <div>
+                      {errors.members[0].email && (
+                        <p className="text-red-500 text-sm">{errors.members[0].email.message}</p>
+                      )}
+                      {errors.members[0].role && (
+                        <p className="text-red-500 text-sm">{errors.members[0].role.message}</p>
+                      )}
+                    </div>
+                  )}
+                </div>
               </TabsContent>
               <TabsContent value="services" className={tabsContentClass}>
                 <div className={spaceY2Class}>
@@ -206,44 +289,55 @@ export default function SetupPage() {
                   <p className={inviteDescClass}>{t('onboarding.servicesDescription')}</p>
                 </div>
                 <div className={gridHeadClass}>
-                  <Label htmlFor="service-0">{t('onboarding.services')}</Label>
+                  <Label htmlFor="service-0">
+                    {t('onboarding.services')} <span className="text-red-500">*</span>
+                  </Label>
                   <Label htmlFor="price-0" className={priceHeadClass}>
-                    {t('onboarding.price')}
+                    {t('onboarding.price')} <span className="text-red-500">*</span>
                   </Label>
                 </div>
                 <div className={spaceY4Class}>
-                  {fields.map((field, index) => (
-                    <div key={field.id} className={gridRowClass}>
-                      <Input
-                        id={`service-${index}`}
-                        placeholder="e.g., Annual Check-up"
-                        className={serviceInputClass}
-                        {...register(`services.${index}.name` as const)}
-                      />
-                      <div className={flexRowClass}>
-                        <Input
-                          id={`price-${index}`}
-                          type="number"
-                          placeholder="0.00"
-                          {...register(`services.${index}.price` as const, { valueAsNumber: true })}
-                        />
-                        <Button
-                          type="button"
-                          size="icon"
-                          variant="ghost"
-                          onClick={() => remove(index)}
-                        >
-                          <Trash2 className={iconSmallClass} />
-                        </Button>
+                  {fields.map((field, index) => {
+                    return (
+                      <div key={field.id} className={gridRowClass}>
+                        <div className="flex flex-col space-y-1 md:col-span-2">
+                          <Input
+                            id={`service-${index}`}
+                            placeholder="e.g., Annual Check-up"
+                            className={errors.services && errors.services[index]?.name ? 'border-red-500' : ''}
+                            {...register(`services.${index}.name` as const)}
+                            required
+                          />
+                          {errors.services && errors.services[index]?.name && (
+                            <p className="text-red-500 text-sm">{errors.services[index].name?.message}</p>
+                          )}
+                        </div>
+                        <div className="flex flex-row items-end gap-2">
+                          <div className="flex flex-col space-y-1">
+                            <Input
+                              id={`price-${index}`}
+                              type="number"
+                              placeholder="0.00"
+                              className={errors.services && errors.services[index]?.price ? 'border-red-500' : ''}
+                              {...register(`services.${index}.price` as const, { valueAsNumber: true })}
+                              required
+                            />
+                            {errors.services && errors.services[index]?.price && (
+                              <p className="text-red-500 text-sm">{errors.services[index].price?.message}</p>
+                            )}
+                          </div>
+                          <Button type="button" size="icon" variant="ghost" onClick={() => remove(index)}>
+                            <Trash2 className={iconSmallClass} />
+                          </Button>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                   <Button
                     variant="outline"
                     className={addButtonClass}
                     type="button"
-                    onClick={() => append({ name: '', price: 0 })}
-                  >
+                    onClick={() => append({ name: '', price: 0 })}>
                     <Plus className={plusIconClass} />
                     {t('onboarding.addAnotherService')}
                   </Button>
@@ -259,7 +353,7 @@ export default function SetupPage() {
               <Button variant="outline" onClick={handlePrev} disabled={currentStep === 'clinic'}>
                 {t('onboarding.previousStep')}
               </Button>
-              <Button onClick={handleSubmit(handleNext)}>
+              <Button onClick={handleNext}>
                 {currentStep === 'services' ? t('onboarding.finishSetup') : t('onboarding.nextStep')}
               </Button>
             </div>
