@@ -113,7 +113,8 @@ export default {
     accountCreated: 'ยินดีต้อนรับ {{name}}! บัญชีของคุณถูกสร้างแล้ว',
     proceedToVerification: 'ไปยังหน้ายืนยันอีเมล',
     proceedToDashboard: 'ไปยังแดชบอร์ด',
-    verificationNotice: 'เราได้ส่งอีเมลยืนยันไปที่ {{email}} คุณสามารถเข้าสู่ระบบได้ทันที แต่กรุณายืนยันเพื่อใช้ฟีเจอร์ทั้งหมด',
+    verificationNotice:
+      'เราได้ส่งอีเมลยืนยันไปที่ {{email}} คุณสามารถเข้าสู่ระบบได้ทันที แต่กรุณายืนยันเพื่อใช้ฟีเจอร์ทั้งหมด',
     continueSetup: 'ดำเนินการตั้งค่าต่อ',
     verifyEmail: 'กรุณายืนยันอีเมลเพื่อเปิดใช้งานบัญชี',
     resendEmail: 'ส่งอีเมลอีกครั้ง',
@@ -138,8 +139,7 @@ export default {
     teamMembers: 'สมาชิกคลินิก',
     services: 'บริการ',
     inviteTeamMembers: 'เชิญสมาชิกคลินิก 1 คน',
-    inviteTeamDescription:
-      'คุณสามารถเชิญสมาชิกคลินิกได้ 1 คนในแผนฟรี หากต้องการเชิญมากกว่า 1 คน กรุณาอัปเกรดแผน',
+    inviteTeamDescription: 'คุณสามารถเชิญสมาชิกคลินิกได้ 1 คนในแผนฟรี หากต้องการเชิญมากกว่า 1 คน กรุณาอัปเกรดแผน',
     singleMemberNotice: 'บัญชีของคุณจะเป็นสมาชิกแรก สามารถเชิญเพิ่มได้เมื่ออัปเกรดแผน',
     addMember: 'เพิ่มสมาชิกคลินิก',
     servicesTitle: 'บริการและการรักษา',
@@ -178,8 +178,7 @@ export default {
     resendVerificationEmail: 'ส่งอีเมลยืนยันอีกครั้ง',
     cta: {
       title: 'ยินดีต้อนรับสู่ Klinfo!',
-      description:
-        'คุณยังไม่ได้สร้างหรือเข้าร่วมคลินิก มาเริ่มตั้งค่าคลินิกแรกของคุณกัน',
+      description: 'คุณยังไม่ได้สร้างหรือเข้าร่วมคลินิก มาเริ่มตั้งค่าคลินิกแรกของคุณกัน',
       managePatientsTitle: 'จัดการคนไข้',
       managePatientsDesc: 'ติดตามประวัติและข้อมูลคนไข้',
       queueManagementTitle: 'จัดการคิว',
@@ -189,21 +188,16 @@ export default {
       createClinic: 'สร้างคลินิกของคุณ',
       needHelp: 'ต้องการความช่วยเหลือ?',
       contactSupport: 'ติดต่อทีมสนับสนุน',
+      welcome: 'ยินดีต้อนรับสู่ Klinfo!',
+      joinClinic: 'เข้าร่วมคลินิกที่มีอยู่',
+      viewPricing: 'ดูราคา',
+      faqLink: 'ดูคำถามที่พบบ่อย',
     },
   },
-  onboardingEmptyState: {
-    welcome: 'ยินดีต้อนรับสู่ Klinfo!',
-    description: 'คุณยังไม่ได้เข้าร่วมหรือสร้างคลินิกใดๆ',
-    createClinic: 'สร้างคลินิกของคุณ',
-    joinClinic: 'เข้าร่วมคลินิกที่มีอยู่',
-    viewPricing: 'ดูราคา',
-    needHelp: 'ต้องการความช่วยเหลือ?',
-    faqLink: 'ดูคำถามที่พบบ่อย',
-  },
+  onboardingEmptyState: {},
   joinClinicPage: {
     title: 'เข้าร่วมคลินิกที่มีอยู่',
-    description:
-      'ขอให้เจ้าของคลินิกเชิญคุณผ่านอีเมล เมื่อได้รับเชิญ คุณจะเห็นคลินิกที่นี่',
+    description: 'ขอให้เจ้าของคลินิกเชิญคุณผ่านอีเมล เมื่อได้รับเชิญ คุณจะเห็นคลินิกที่นี่',
     backToDashboard: 'กลับไปแดชบอร์ด',
   },
 } as const;

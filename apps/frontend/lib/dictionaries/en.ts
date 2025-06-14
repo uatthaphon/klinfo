@@ -113,7 +113,8 @@ export default {
     accountCreated: 'Welcome, {{name}}! Your account has been created.',
     proceedToVerification: 'Proceed to Email Verification',
     proceedToDashboard: 'Proceed to Dashboard',
-    verificationNotice: "We've sent a verification email to {{email}}. You can log in now, but please verify to use all features.",
+    verificationNotice:
+      "We've sent a verification email to {{email}}. You can log in now, but please verify to use all features.",
     continueSetup: 'Continue Setup',
     verifyEmail: 'Please verify your email address to activate your account.',
     resendEmail: 'Resend email',
@@ -189,21 +190,15 @@ export default {
       createClinic: 'Create Your Clinic',
       needHelp: 'Need help?',
       contactSupport: 'Contact our support team',
+      welcome: 'Welcome to Klinfo!',
+      joinClinic: 'Join Existing Clinic',
+      viewPricing: 'View Pricing',
+      faqLink: 'Check our FAQ',
     },
-  },
-  onboardingEmptyState: {
-    welcome: 'Welcome to Klinfo!',
-    description: "You haven't joined or created any clinic yet.",
-    createClinic: 'Create Your Clinic',
-    joinClinic: 'Join Existing Clinic',
-    viewPricing: 'View Pricing',
-    needHelp: 'Need help?',
-    faqLink: 'Check our FAQ',
   },
   joinClinicPage: {
     title: 'Join an Existing Clinic',
-    description:
-      'Ask a clinic owner to invite you using your email. Once invited, the clinic will appear here.',
+    description: 'Ask a clinic owner to invite you using your email. Once invited, the clinic will appear here.',
     backToDashboard: 'Back to Dashboard',
   },
 } as const;
