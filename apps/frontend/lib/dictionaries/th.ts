@@ -1,4 +1,5 @@
 export default {
+  Dashboard: 'แดชบอร์ด',
   common: {
     clinics: 'คลินิก',
     appName: 'Klinfo',

@@ -1,4 +1,5 @@
 export default {
+  Dashboard: 'Dashboard',
   common: {
     clinics: 'Clinics',
     appName: 'Klinfo',
