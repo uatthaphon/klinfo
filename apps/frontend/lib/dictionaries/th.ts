@@ -176,5 +176,19 @@ export default {
     emailNotVerifiedBanner: 'อีเมลของคุณยังไม่ได้รับการยืนยัน การทำรายการบางอย่างจะถูกปิดใช้งานจนกว่าจะยืนยัน',
     verifyBeforeClinic: 'กรุณายืนยันอีเมลก่อนสร้างคลินิก',
     resendVerificationEmail: 'ส่งอีเมลยืนยันอีกครั้ง',
+    cta: {
+      title: 'ยินดีต้อนรับสู่ Klinfo!',
+      description:
+        'คุณยังไม่ได้สร้างหรือเข้าร่วมคลินิก มาเริ่มตั้งค่าคลินิกแรกของคุณกัน',
+      managePatientsTitle: 'จัดการคนไข้',
+      managePatientsDesc: 'ติดตามประวัติและข้อมูลคนไข้',
+      queueManagementTitle: 'จัดการคิว',
+      queueManagementDesc: 'จัดการคิวประจำวันของคลินิก',
+      handleBillingTitle: 'จัดการบิล',
+      handleBillingDesc: 'ออกใบเสร็จและติดตามการชำระเงิน',
+      createClinic: 'สร้างคลินิกของคุณ',
+      needHelp: 'ต้องการความช่วยเหลือ?',
+      contactSupport: 'ติดต่อทีมสนับสนุน',
+    },
   },
 } as const;

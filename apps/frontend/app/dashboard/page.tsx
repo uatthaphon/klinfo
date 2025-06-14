@@ -1,7 +1,6 @@
 'use client'
 import { AppSidebar } from "@/components/app-sidebar"
 import { Header } from "@/components/header"
-import { EmailVerificationBanner } from "@/components/email-verification-banner"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -29,8 +28,6 @@ export default function Page() {
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        <EmailVerificationBanner />
-
         <Header fixed user={data.user}>
           <div className="flex items-center gap-2 px-4">
             <Breadcrumb>

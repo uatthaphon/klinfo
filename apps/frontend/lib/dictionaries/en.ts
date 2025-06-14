@@ -176,5 +176,19 @@ export default {
     emailNotVerifiedBanner: 'Your email is not verified. Some actions are disabled until you verify it.',
     verifyBeforeClinic: 'Please verify your email first to create a clinic.',
     resendVerificationEmail: 'Resend Verification Email',
+    cta: {
+      title: 'Welcome to Klinfo!',
+      description:
+        "You haven't created or joined any clinic yet. Let's get you started with setting up your first clinic.",
+      managePatientsTitle: 'Manage Patients',
+      managePatientsDesc: 'Keep track of patient records and history',
+      queueManagementTitle: 'Queue management',
+      queueManagementDesc: "Organize your clinic's daily queue",
+      handleBillingTitle: 'Handle Billing',
+      handleBillingDesc: 'Generate receipts and track payments',
+      createClinic: 'Create Your Clinic',
+      needHelp: 'Need help?',
+      contactSupport: 'Contact our support team',
+    },
   },
 } as const;
