@@ -48,6 +48,12 @@ src/
 
 - Naming examples: `PatientCard`, `QueueTable`, `VisitNoteEditor`
 
+### 🤖 Codex/GPT Collaboration Rules for Frontend Code
+
+- ✅ When writing or refactoring JSX, always extract Tailwind class strings to a `const` above the component. Avoid inline Tailwind in JSX.
+- ✅ When adding or modifying UI, always update both Thai and English translations in the relevant `lib/dictionaries` files.
+- ✅ For form handling, always use `react-hook-form` and `zod` schema validation — never manual field checks.
+
 ---
 
 ## 🎨 UI/UX Collaboration
