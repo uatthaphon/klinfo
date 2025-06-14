@@ -63,7 +63,9 @@ export default function SignupSuccessPage() {
                 name: name || t('auth.signup'),
               })}
             </CardTitle>
-            <CardDescription>{t('onboarding.verifyEmail')}</CardDescription>
+            <CardDescription>
+              {t('onboarding.verificationNotice', { email })}
+            </CardDescription>
           </CardHeader>
           <CardContent className={cardContentClass}>
             <div className={stepBoxClass}>
@@ -93,8 +95,8 @@ export default function SignupSuccessPage() {
           </CardContent>
           <CardFooter>
             <Button asChild className={buttonClass}>
-              <Link href={`/auth/verify-email?email=${encodeURIComponent(email)}`}>
-                {t('onboarding.proceedToVerification')}
+              <Link href="/dashboard">
+                {t('onboarding.proceedToDashboard')}
               </Link>
             </Button>
           </CardFooter>

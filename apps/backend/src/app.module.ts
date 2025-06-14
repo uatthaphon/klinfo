@@ -11,6 +11,7 @@ import { ClinicMembersModule } from './clinic-members/clinic-members.module';
 import { ServiceModule } from './services/service.module';
 import { OnboardingModule } from './onboarding/onboarding.module';
 import { UsersModule } from './users/users.module';
+import { InvitationsModule } from './invitations/invitations.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { UsersModule } from './users/users.module';
     ClinicsModule,
     ClinicMembersModule,
     ServiceModule,
+    InvitationsModule,
     OnboardingModule,
     AuthModule,
   ],

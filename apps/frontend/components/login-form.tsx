@@ -67,6 +67,9 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
       const res = await login(values)
       if (res?.data?.accessToken) {
         localStorage.setItem('accessToken', res.data.accessToken)
+        if ('isVerified' in res.data) {
+          localStorage.setItem('isVerified', String(res.data.isVerified))
+        }
       }
       router.push('/dashboard')
     } catch (err: unknown) {

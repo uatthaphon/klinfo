@@ -53,3 +53,8 @@ export async function resendVerificationEmail(email: string) {
   const res = await api.post(`${API_BASE}/auth/resend-verification`, { email })
   return res.data
 }
+
+export async function getProfile() {
+  const res = await api.get(`${API_BASE}/auth/me`)
+  return res.data
+}

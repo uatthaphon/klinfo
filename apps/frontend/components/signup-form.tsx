@@ -77,6 +77,9 @@ export function SignUpForm({ className, ...props }: React.ComponentProps<'div'>)
       });
       if (res?.data?.accessToken) {
         localStorage.setItem('accessToken', res.data.accessToken);
+        if ('isVerified' in res.data) {
+          localStorage.setItem('isVerified', String(res.data.isVerified));
+        }
       }
 
       localStorage.setItem('userName', values.name)

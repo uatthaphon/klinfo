@@ -112,6 +112,8 @@ export default {
   onboarding: {
     accountCreated: 'Welcome, {{name}}! Your account has been created.',
     proceedToVerification: 'Proceed to Email Verification',
+    proceedToDashboard: 'Proceed to Dashboard',
+    verificationNotice: "We've sent a verification email to {{email}}. You can log in now, but please verify to use all features.",
     continueSetup: 'Continue Setup',
     verifyEmail: 'Please verify your email address to activate your account.',
     resendEmail: 'Resend email',
@@ -171,5 +173,8 @@ export default {
     },
     verificationEmailSent: "We've sent a verification email to {{email}}.",
     verificationEmailNotReceived: "Didn't receive an email?",
+    emailNotVerifiedBanner: 'Your email is not verified. Some actions are disabled until you verify it.',
+    verifyBeforeClinic: 'Please verify your email first to create a clinic.',
+    resendVerificationEmail: 'Resend Verification Email',
   },
 } as const;

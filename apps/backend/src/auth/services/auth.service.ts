@@ -9,6 +9,8 @@ import { ResponseMeta } from 'src/common/constants/response-codes';
 import { MailService } from 'src/mail/mail.service';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
+import { InvitationsService } from 'src/invitations/invitations.service';
+import { ClinicMembersService } from 'src/clinic-members/clinic-members.service';
 import { LoginDto } from '../dto/login.dto';
 import { RequestPasswordDto } from '../dto/request-password.dto';
 import { ResetPasswordDto } from '../dto/reset-password.dto';
@@ -22,6 +24,8 @@ export class AuthService {
     private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
     private readonly mailService: MailService,
+    private readonly invitationsService: InvitationsService,
+    private readonly clinicMembersService: ClinicMembersService,
   ) {}
 
   async signup(dto: SignupDto): Promise<any> {
@@ -42,17 +46,37 @@ export class AuthService {
       email: dto.email,
       password: hashedPassword,
     });
+
+    let invite = null;
+    if (dto.inviteToken) {
+      invite = await this.invitationsService.findValidToken(dto.inviteToken);
+      if (invite && invite.email !== dto.email) {
+        invite = null;
+      }
+    }
+
+    if (invite) {
+      user.isEmailVerified = true;
+    }
+
     await this.userRepository.save(user);
-    const verifyToken = await this.jwtService.signAsync(
-      { sub: user.id, purpose: 'verify' },
-      { expiresIn: '1d' },
-    );
-    await this.mailService.sendEmailVerification(user.email, verifyToken);
-    const accessToken = await this.jwtService.signAsync({ sub: user.id });
+
+    if (invite) {
+      await this.clinicMembersService.addMember(invite.clinic, user.id, invite.role);
+      await this.invitationsService.markAccepted(invite);
+    } else {
+      const verifyToken = await this.jwtService.signAsync(
+        { sub: user.id, purpose: 'verify' },
+        { expiresIn: '1d' },
+      );
+      await this.mailService.sendEmailVerification(user.email, verifyToken);
+    }
+
+    const accessToken = await this.jwtService.signAsync({ sub: user.id, verified: !!user.isEmailVerified });
     return {
       success: true,
       ...ResponseMeta.Auth.SignupSuccess,
-      data: { accessToken },
+      data: { accessToken, isVerified: !!user.isEmailVerified },
     };
   }
 
@@ -67,11 +91,11 @@ export class AuthService {
         data: null,
       });
     }
-    const accessToken = await this.jwtService.signAsync({ sub: user.id });
+    const accessToken = await this.jwtService.signAsync({ sub: user.id, verified: user.isEmailVerified });
     return {
       success: true,
       ...ResponseMeta.Auth.LoginSuccess,
-      data: { accessToken },
+      data: { accessToken, isVerified: user.isEmailVerified },
     };
   }
 
@@ -163,6 +187,18 @@ export class AuthService {
       ...ResponseMeta.Auth.EmailVerified,
       data: null,
     };
+  }
+
+  async getProfile(userId: string): Promise<any> {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new BadRequestException({
+        success: false,
+        ...ResponseMeta.Auth.UserNotFound,
+        data: null,
+      });
+    }
+    return { success: true, data: { email: user.email, name: user.name, isVerified: user.isEmailVerified } };
   }
 
   async resendVerification(email: string): Promise<any> {

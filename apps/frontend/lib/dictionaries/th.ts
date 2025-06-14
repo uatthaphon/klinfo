@@ -112,6 +112,8 @@ export default {
   onboarding: {
     accountCreated: 'ยินดีต้อนรับ {{name}}! บัญชีของคุณถูกสร้างแล้ว',
     proceedToVerification: 'ไปยังหน้ายืนยันอีเมล',
+    proceedToDashboard: 'ไปยังแดชบอร์ด',
+    verificationNotice: 'เราได้ส่งอีเมลยืนยันไปที่ {{email}} คุณสามารถเข้าสู่ระบบได้ทันที แต่กรุณายืนยันเพื่อใช้ฟีเจอร์ทั้งหมด',
     continueSetup: 'ดำเนินการตั้งค่าต่อ',
     verifyEmail: 'กรุณายืนยันอีเมลเพื่อเปิดใช้งานบัญชี',
     resendEmail: 'ส่งอีเมลอีกครั้ง',
@@ -171,5 +173,8 @@ export default {
     },
     verificationEmailSent: 'เราได้ส่งอีเมลยืนยันไปที่ {{email}} แล้ว',
     verificationEmailNotReceived: 'ยังไม่ได้รับอีเมลใช่ไหม?',
+    emailNotVerifiedBanner: 'อีเมลของคุณยังไม่ได้รับการยืนยัน การทำรายการบางอย่างจะถูกปิดใช้งานจนกว่าจะยืนยัน',
+    verifyBeforeClinic: 'กรุณายืนยันอีเมลก่อนสร้างคลินิก',
+    resendVerificationEmail: 'ส่งอีเมลยืนยันอีกครั้ง',
   },
 } as const;
