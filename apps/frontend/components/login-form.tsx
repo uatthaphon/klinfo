@@ -4,13 +4,14 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { PasswordInput } from '@/components/ui/password-input';
 import { login } from '@/lib/api/auth';
 import { mapLoginErrorCode } from '@/lib/api/error-handler';
 import { useTranslation } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
-import Link from 'next/link';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -64,14 +65,14 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
   const onSubmit = async (values: FormValues) => {
     setServerError('');
     try {
-      const res = await login(values)
+      const res = await login(values);
       if (res?.data?.accessToken) {
-        localStorage.setItem('accessToken', res.data.accessToken)
+        localStorage.setItem('accessToken', res.data.accessToken);
         if ('isVerified' in res.data) {
-          localStorage.setItem('isVerified', String(res.data.isVerified))
+          localStorage.setItem('isVerified', String(res.data.isVerified));
         }
       }
-      router.push('/dashboard')
+      router.push('/dashboard');
     } catch (err: unknown) {
       const code = typeof err === 'object' && err && 'code' in err ? (err as { code: string }).code : 'UNKNOWN';
       const mapped = mapLoginErrorCode(code, t);
@@ -112,14 +113,18 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
                     {t('auth.forgotPassword')}
                   </Link>
                 </div>
-                <Input
+                <PasswordInput
                   id="password"
-                  type="password"
-                  aria-invalid={!!errors.password}
+                  isInvalid={!!errors.password}
+                  aria-describedby={errors.password ? 'password-error' : undefined}
                   {...register('password')}
                   disabled={isSubmitting}
                 />
-                {errors.password && <p className="text-destructive text-sm -mt-1">{errors.password.message}</p>}
+                {errors.password && (
+                  <p id="password-error" className="text-destructive text-sm -mt-1">
+                    {errors.password.message}
+                  </p>
+                )}
               </div>
               <Button type="submit" className={submitButtonClass} disabled={isSubmitting}>
                 {t('auth.login')}
