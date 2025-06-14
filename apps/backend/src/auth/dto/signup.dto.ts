@@ -9,4 +9,6 @@ export class SignupDto {
 
   @MinLength(6)
   password: string;
+
+  inviteToken?: string;
 }

@@ -1,9 +1,7 @@
-import { User } from '../../users/entities/user.entity';
-
 declare global {
   namespace Express {
     interface Request {
-      user?: User;
+      user?: { id: string; isVerified: boolean };
     }
   }
 }

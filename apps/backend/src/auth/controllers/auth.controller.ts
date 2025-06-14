@@ -1,4 +1,5 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Get, Req, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { LoginDto } from '../dto/login.dto';
 import { ResetPasswordDto } from '../dto/reset-password.dto';
 import { SignupDto } from '../dto/signup.dto';
@@ -40,5 +41,11 @@ export class AuthController {
   @Post('resend-verification')
   resendVerification(@Body() dto: RequestVerificationDto) {
     return this.authService.resendVerification(dto.email);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('me')
+  me(@Req() req: any) {
+    return this.authService.getProfile(req.user.id);
   }
 }

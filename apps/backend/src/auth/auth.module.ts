@@ -8,6 +8,9 @@ import { AuthController } from './controllers/auth.controller';
 import { AuthService } from './services/auth.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { MailModule } from '../mail/mail.module';
+import { InvitationsModule } from '../invitations/invitations.module';
+import { ClinicMembersModule } from '../clinic-members/clinic-members.module';
+import { VerifiedGuard } from './guards/verified.guard';
 
 @Module({
   imports: [
@@ -15,6 +18,8 @@ import { MailModule } from '../mail/mail.module';
     TypeOrmModule.forFeature([User]),
     PassportModule,
     MailModule,
+    ClinicMembersModule,
+    InvitationsModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -24,7 +29,7 @@ import { MailModule } from '../mail/mail.module';
       }),
     }),
   ],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy, VerifiedGuard],
   controllers: [AuthController],
 })
 export class AuthModule {}
