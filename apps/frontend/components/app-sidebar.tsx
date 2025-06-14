@@ -1,98 +1,92 @@
-"use client"
+'use client';
 
 import {
   AudioWaveform,
-  ChartNoAxesCombined,
+  BarChart3,
   ClipboardList,
+  Clock,
   Command,
+  CreditCard,
+  Crown,
   GalleryVerticalEnd,
   History,
-  IdCard,
   Info,
   LayoutDashboard,
-  List,
-  Orbit,
-  Receipt,
   SettingsIcon,
-  Users
-} from "lucide-react"
-import * as React from "react"
+  UserCheck,
+  Users,
+} from 'lucide-react';
+import * as React from 'react';
 
-import { ClinicSwitcher } from "@/components/clinic-switcher"
-import { NavMain } from "@/components/nav-main"
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarRail,
-} from "@/components/ui/sidebar"
-import { NavSecondary } from "./nav-secondary"
+import { ClinicSwitcher } from '@/components/clinic-switcher';
+import { NavMain } from '@/components/nav-main';
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from '@/components/ui/sidebar';
+import { NavSecondary } from './nav-secondary';
 
-function getNavItemsByRole(role: "owner" | "staff" | "doctor") {
+function getNavItemsByRole(role: 'owner' | 'staff' | 'doctor') {
   const roleSpecific = {
     owner: [
-      { title: "Dashboard", url: "#", icon: LayoutDashboard },
-      { title: "Queue", url: "#", icon: List },
-      { title: "Patients", url: "#", icon: Users },
-      { title: "Orders", url: "#", icon: ClipboardList },
-      { title: "Billing", url: "#", icon: Receipt },
-      { title: "Staff", url: "#", icon: IdCard },
-      { title: "Report", url: "#", icon: ChartNoAxesCombined },
-      { title: "Subscription", url: "#", icon: Orbit },
+      { title: 'Dashboard', url: '#', icon: LayoutDashboard },
+      { title: 'Queue', url: '#', icon: Clock },
+      { title: 'Patients', url: '#', icon: Users },
+      { title: 'Orders', url: '#', icon: ClipboardList },
+      { title: 'Billing', url: '#', icon: CreditCard },
+      { title: 'Staff', url: '#', icon: UserCheck },
+      { title: 'Report', url: '#', icon: BarChart3 },
+      { title: 'Subscription', url: '#', icon: Crown },
     ],
     staff: [
-      { title: "Dashboard", url: "#", icon: LayoutDashboard },
-      { title: "Queue", url: "#", icon: List },
-      { title: "Patients", url: "#", icon: Users },
-      { title: "Orders", url: "#", icon: ClipboardList },
-      { title: "Billing", url: "#", icon: Receipt },
+      { title: 'Dashboard', url: '#', icon: LayoutDashboard },
+      { title: 'Queue', url: '#', icon: Clock },
+      { title: 'Patients', url: '#', icon: Users },
+      { title: 'Orders', url: '#', icon: ClipboardList },
+      { title: 'Billing', url: '#', icon: CreditCard },
     ],
     doctor: [
-      { title: "Queue", url: "#", icon: List },
-      { title: "Past Visits", url: "#", icon: History },
+      { title: 'Queue', url: '#', icon: Clock },
+      { title: 'Past Visits', url: '#', icon: History },
     ],
   };
 
   return roleSpecific[role] || [];
 }
 
-const role = "owner"; // Replace this with a dynamic value as needed
+const role = 'owner'; // Replace this with a dynamic value as needed
 
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "https://ui.shadcn.com/avatars/02.png",
+    name: 'shadcn',
+    email: 'm@example.com',
+    avatar: 'https://ui.shadcn.com/avatars/02.png',
   },
   clinics: [
     {
-      name: "คลินิกเวชกรรมกรุงเทพ",
+      name: 'คลินิกเวชกรรมกรุงเทพ',
       logo: GalleryVerticalEnd,
     },
     {
-      name: "คลินิกยิ้มสวยทันตกรรม",
+      name: 'คลินิกยิ้มสวยทันตกรรม',
       logo: AudioWaveform,
     },
     {
-      name: "คลินิกหมอใจดี",
+      name: 'คลินิกหมอใจดี',
       logo: Command,
     },
   ],
   navMain: getNavItemsByRole(role),
   navSecondary: [
     {
-      title: "Settings",
-      url: "#",
+      title: 'Settings',
+      url: '#',
       icon: SettingsIcon,
     },
     {
-      title: "Get Help",
-      url: "#",
+      title: 'Get Help',
+      url: '#',
       icon: Info,
-    }
+    },
   ],
-}
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -104,9 +98,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain role={role} items={data.navMain} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
-      <SidebarFooter>
-      </SidebarFooter>
+      <SidebarFooter></SidebarFooter>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }

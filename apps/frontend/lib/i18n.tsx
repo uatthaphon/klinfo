@@ -20,18 +20,18 @@ const TranslationContext = createContext<{
   t: (key: string, vars?: Record<string, string>) => string;
   setLang: (lang: Language) => void;
 }>({
-  lang: 'en',
+  lang: 'th',
   t: (key) => key,
   setLang: () => {},
 });
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Language>('en');
+  const [lang, setLangState] = useState<Language>('th');
 
   useEffect(() => {
     const stored = localStorage.getItem('lang') as Language | null;
     if (stored) setLangState(stored);
-    document.documentElement.lang = stored || 'en';
+    document.documentElement.lang = stored || 'th';
   }, []);
 
   function setLang(l: Language) {
