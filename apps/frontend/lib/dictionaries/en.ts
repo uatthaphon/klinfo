@@ -191,4 +191,19 @@ export default {
       contactSupport: 'Contact our support team',
     },
   },
+  onboardingEmptyState: {
+    welcome: 'Welcome to Klinfo!',
+    description: "You haven't joined or created any clinic yet.",
+    createClinic: 'Create Your Clinic',
+    joinClinic: 'Join Existing Clinic',
+    viewPricing: 'View Pricing',
+    needHelp: 'Need help?',
+    faqLink: 'Check our FAQ',
+  },
+  joinClinicPage: {
+    title: 'Join an Existing Clinic',
+    description:
+      'Ask a clinic owner to invite you using your email. Once invited, the clinic will appear here.',
+    backToDashboard: 'Back to Dashboard',
+  },
 } as const;
