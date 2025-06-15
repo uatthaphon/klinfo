@@ -7,7 +7,6 @@ import {
   Clock,
   Command,
   CreditCard,
-  Crown,
   GalleryVerticalEnd,
   History,
   Info,
@@ -33,7 +32,6 @@ function getNavItemsByRole(role: 'owner' | 'staff' | 'doctor') {
       { title: 'Billing', url: '#', icon: CreditCard },
       { title: 'Staff', url: '#', icon: UserCheck },
       { title: 'Report', url: '#', icon: BarChart3 },
-      { title: 'Subscription', url: '#', icon: Crown },
     ],
     staff: [
       { title: 'Dashboard', url: '#', icon: LayoutDashboard },
